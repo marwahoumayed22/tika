@@ -34,6 +34,12 @@
   <name>Apache Tika core</name>
   <url>https://tika.apache.org/</url>
 
+  <!-- IFT3913 Tache 2 : classe ciblee par ChatUniTest et PIT -->
+  <properties>
+    <pit.targetClasses>org.apache.tika.io.EndianUtils</pit.targetClasses>
+    <pit.targetTests>org.apache.tika.io.EndianUtils*</pit.targetTests>
+  </properties>
+
   <dependencies>
     <!-- See https://issues.apache.org/jira/browse/TIKA-2566 for more info -->
     <dependency>
@@ -208,6 +214,8 @@
             <inputExclude>src/test/resources/test-documents/ang20150420t182050_corr_v1e_img.hdr</inputExclude>
             <inputExclude>src/test/resources/test-documents/*.pdf</inputExclude>
             <inputExclude>src/main/resources/org/apache/tika/metadata/metadata-migration-3x-4x.json</inputExclude>
+            <!-- IFT3913 Tache 2 : sortie brute de ChatUniTest, conservee telle quelle -->
+            <inputExclude>chatunitest-tests/**</inputExclude>
           </inputExcludes>
         </configuration>
       </plugin>
@@ -290,6 +298,37 @@
           </execution>
         </executions>
       </plugin>
+      <!-- IFT3913 Tache 2 : analyse de mutation avec PIT
+           mvn test-compile org.pitest:pitest-maven:mutationCoverage
+           tests originaux seulement : -Dpit.targetTests=org.apache.tika.io.EndianUtilsTest -->
+      <plugin>
+        <groupId>org.pitest</groupId>
+        <artifactId>pitest-maven</artifactId>
+        <version>1.17.4</version>
+        <dependencies>
+          <dependency>
+            <groupId>org.pitest</groupId>
+            <artifactId>pitest-junit5-plugin</artifactId>
+            <version>1.2.1</version>
+          </dependency>
+        </dependencies>
+        <configuration>
+          <targetClasses>
+            <param>${pit.targetClasses}</param>
+          </targetClasses>
+          <targetTests>
+            <param>${pit.targetTests}</param>
+          </targetTests>
+          <mutators>
+            <mutator>DEFAULTS</mutator>
+          </mutators>
+          <outputFormats>
+            <param>HTML</param>
+            <param>XML</param>
+          </outputFormats>
+          <timestampedReports>false</timestampedReports>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
   <reporting>
@@ -341,4 +380,41 @@
   <scm>
     <tag>3.0.0-rc1</tag>
   </scm>
+  <!-- IFT3913 Tache 2 : generation de tests avec ChatUniTest + Ollama (local seulement)
+       cd tika-core && ../mvnw -Pchatunitest chatunitest:class -DselectClass=EndianUtils -->
+  <profiles>
+    <profile>
+      <id>chatunitest</id>
+      <dependencies>
+        <dependency>
+          <groupId>io.github.ZJU-ACES-ISE</groupId>
+          <artifactId>chatunitest-starter</artifactId>
+          <version>1.4.0</version>
+          <type>pom</type>
+          <scope>test</scope>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>io.github.zju-aces-ise</groupId>
+            <artifactId>chatunitest-maven-plugin</artifactId>
+            <version>2.1.1</version>
+            <configuration>
+              <!-- Ollama ignore la cle, mais le plugin exige une valeur -->
+              <apiKeys>ollama</apiKeys>
+              <model>qwen2.5-coder:7b</model>
+              <url>http://localhost:11434/v1/chat/completions</url>
+              <testNumber>3</testNumber>
+              <maxRounds>3</maxRounds>
+              <temperature>0.2</temperature>
+              <!-- un seul fil : un modele local ne supporte pas 20 requetes en parallele -->
+              <thread>false</thread>
+              <testOutput>${project.basedir}/chatunitest-tests</testOutput>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
