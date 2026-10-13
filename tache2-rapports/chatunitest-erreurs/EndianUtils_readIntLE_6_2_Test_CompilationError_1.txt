@@ -1,0 +1,119 @@
+package org.apache.tika.io;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import org.apache.tika.exception.BufferUnderrunException;
+import org.apache.tika.exception.TikaException;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.*;
+import org.junit.jupiter.api.*;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+public class EndianUtils_readIntLE_6_2_Test {
+
+    private EndianUtils endianUtils;
+
+    private InputStream inputStream;
+
+    @BeforeEach
+    public void setUp() {
+        endianUtils = new EndianUtils();
+        inputStream = mock(InputStream.class);
+    }
+
+    @Test
+    public void testReadIntLENormal() throws IOException {
+        // Arrange
+        int expectedValue = 12345678;
+        byte[] bytes = new byte[] { (byte) 0x78, (byte) 0x56, (byte) 0x34, (byte) 0x12 };
+        when(inputStream.read()).thenReturn(bytes[0], bytes[1], bytes[2], bytes[3]);
+        // Act
+        int result = endianUtils.readIntLE(inputStream);
+        // Assert
+        assertEquals(expectedValue, result);
+    }
+
+    @Test
+    public void testReadIntLENegativeValue() throws IOException {
+        // Arrange
+        int expectedValue = -12345678;
+        byte[] bytes = new byte[] { (byte) 0x78, (byte) 0x56, (byte) 0x34, (byte) 0x12 };
+        when(inputStream.read()).thenReturn(bytes[0], bytes[1], bytes[2], bytes[3]);
+        // Act
+        int result = endianUtils.readIntLE(inputStream);
+        // Assert
+        assertEquals(expectedValue, result);
+    }
+
+    @Test
+    public void testReadIntLEBufferUnderrun() throws IOException {
+        // Arrange
+        when(inputStream.read()).thenReturn(-1);
+        // Act and Assert
+        assertThrows(BufferUnderrunException.class, () -> {
+            endianUtils.readIntLE(inputStream);
+        });
+    }
+
+    @Test
+    public void testReadIntLETimeout() {
+        // Arrange
+        when(inputStream.read()).thenReturn(-1);
+        // Act and Assert
+        assertTimeoutPreemptively(Duration.ofMillis(100), () -> {
+            endianUtils.readIntLE(inputStream);
+        });
+    }
+
+    @Test
+    public void testReadIntLEMultipleReads() throws IOException {
+        // Arrange
+        int expectedValue = 12345678;
+        byte[] bytes = new byte[] { (byte) 0x78, (byte) 0x56, (byte) 0x34, (byte) 0x12 };
+        when(inputStream.read()).thenReturn(bytes[0], bytes[1], bytes[2], bytes[3]);
+        // Act
+        int result = endianUtils.readIntLE(inputStream);
+        // Assert
+        assertEquals(expectedValue, result);
+    }
+
+    @Test
+    public void testReadIntLEMultipleReadsNegativeValue() throws IOException {
+        // Arrange
+        int expectedValue = -12345678;
+        byte[] bytes = new byte[] { (byte) 0x78, (byte) 0x56, (byte) 0x34, (byte) 0x12 };
+        when(inputStream.read()).thenReturn(bytes[0], bytes[1], bytes[2], bytes[3]);
+        // Act
+        int result = endianUtils.readIntLE(inputStream);
+        // Assert
+        assertEquals(expectedValue, result);
+    }
+
+    @Test
+    public void testReadIntLEMultipleReadsBufferUnderrun() throws IOException {
+        // Arrange
+        when(inputStream.read()).thenReturn(-1);
+        // Act and Assert
+        assertThrows(BufferUnderrunException.class, () -> {
+            endianUtils.readIntLE(inputStream);
+        });
+    }
+
+    @Test
+    public void testReadIntLEMultipleReadsTimeout() {
+        // Arrange
+        when(inputStream.read()).thenReturn(-1);
+        // Act and Assert
+        assertTimeoutPreemptively(Duration.ofMillis(100), () -> {
+            endianUtils.readIntLE(inputStream);
+        });
+    }
+}
+
+--------------------------------------------
+Error in EndianUtils_readIntLE_6_2_Test: line 6 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: package org.apache.tika.exception

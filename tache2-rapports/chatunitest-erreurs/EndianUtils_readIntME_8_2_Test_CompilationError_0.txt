@@ -1,0 +1,97 @@
+package org.apache.tika.io;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import org.apache.tika.exception.BufferUnderrunException;
+import org.apache.tika.io.EndianUtils;
+import org.mockito.*;
+import org.junit.jupiter.api.*;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.apache.tika.exception.TikaException;
+
+public class EndianUtils_readIntME_8_2_Test {
+
+    private InputStream inputStream;
+
+    private EndianUtils endianUtils;
+
+    @BeforeEach
+    public void setUp() {
+        endianUtils = new EndianUtils();
+        inputStream = mock(InputStream.class);
+    }
+
+    @Test
+    public void testReadIntME() throws IOException, BufferUnderrunException {
+        // Test case 1: Normal case with positive integers
+        when(inputStream.read()).thenReturn(0x12, 0x34, 0x56, 0x78);
+        assertEquals(0x12345678, endianUtils.readIntME(inputStream));
+        // Test case 2: Normal case with negative integers (should throw BufferUnderrunException)
+        when(inputStream.read()).thenReturn(0x87, 0x65, 0x43, 0x21);
+        assertThrows(BufferUnderrunException.class, () -> endianUtils.readIntME(inputStream));
+        // Test case 3: Edge case with all zeros
+        when(inputStream.read()).thenReturn(0x00, 0x00, 0x00, 0x00);
+        assertEquals(0x00000000, endianUtils.readIntME(inputStream));
+        // Test case 4: Edge case with all ones
+        when(inputStream.read()).thenReturn(0xFF, 0xFF, 0xFF, 0xFF);
+        assertEquals(0xFFFFFFFF, endianUtils.readIntME(inputStream));
+        // Test case 5: Edge case with all zeros and negative integer
+        when(inputStream.read()).thenReturn(0x00, 0x00, 0x00, 0x80);
+        assertThrows(BufferUnderrunException.class, () -> endianUtils.readIntME(inputStream));
+        // Test case 6: Edge case with all ones and negative integer
+        when(inputStream.read()).thenReturn(0xFF, 0xFF, 0xFF, 0x7F);
+        assertThrows(BufferUnderrunException.class, () -> endianUtils.readIntME(inputStream));
+    }
+
+    @Test
+    public void testReadIntMEWithNegativeInput() throws IOException, BufferUnderrunException {
+        // Test case 7: Negative input should throw BufferUnderrunException
+        when(inputStream.read()).thenReturn(-1, 0x34, 0x56, 0x78);
+        assertThrows(BufferUnderrunException.class, () -> endianUtils.readIntME(inputStream));
+    }
+
+    @Test
+    public void testReadIntMEWithNegativeInput2() throws IOException, BufferUnderrunException {
+        // Test case 8: Negative input should throw BufferUnderrunException
+        when(inputStream.read()).thenReturn(0x12, -1, 0x56, 0x78);
+        assertThrows(BufferUnderrunException.class, () -> endianUtils.readIntME(inputStream));
+    }
+
+    @Test
+    public void testReadIntMEWithNegativeInput3() throws IOException, BufferUnderrunException {
+        // Test case 9: Negative input should throw BufferUnderrunException
+        when(inputStream.read()).thenReturn(0x12, 0x34, -1, 0x78);
+        assertThrows(BufferUnderrunException.class, () -> endianUtils.readIntME(inputStream));
+    }
+
+    @Test
+    public void testReadIntMEWithNegativeInput4() throws IOException, BufferUnderrunException {
+        // Test case 10: Negative input should throw BufferUnderrunException
+        when(inputStream.read()).thenReturn(0x12, 0x34, 0x56, -1);
+        assertThrows(BufferUnderrunException.class, () -> endianUtils.readIntME(inputStream));
+    }
+}
+
+--------------------------------------------
+Error in EndianUtils_readIntME_8_2_Test: line 6 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: package org.apache.tika.exception
+Error in EndianUtils_readIntME_8_2_Test: line 29 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: class org.apache.tika.io.EndianUtils_readIntME_8_2_Test
+Error in EndianUtils_readIntME_8_2_Test: line 51 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: class org.apache.tika.io.EndianUtils_readIntME_8_2_Test
+Error in EndianUtils_readIntME_8_2_Test: line 58 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: class org.apache.tika.io.EndianUtils_readIntME_8_2_Test
+Error in EndianUtils_readIntME_8_2_Test: line 65 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: class org.apache.tika.io.EndianUtils_readIntME_8_2_Test
+Error in EndianUtils_readIntME_8_2_Test: line 72 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: class org.apache.tika.io.EndianUtils_readIntME_8_2_Test

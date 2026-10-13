@@ -403,7 +403,7 @@
             <configuration>
               <!-- Ollama ignore la cle, mais le plugin exige une valeur -->
               <apiKeys>ollama</apiKeys>
-              <model>qwen2.5-coder:7b</model>
+              <model>codeqwen:v1.5-chat</model>
               <url>http://localhost:11434/v1/chat/completions</url>
               <testNumber>3</testNumber>
               <maxRounds>3</maxRounds>

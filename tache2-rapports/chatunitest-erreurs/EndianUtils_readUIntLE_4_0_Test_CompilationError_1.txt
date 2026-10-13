@@ -1,0 +1,81 @@
+package org.apache.tika.io;
+
+import static org.junit.jupiter.api.extension.ExtendWith;
+import static org.mockito.MockitoAnnotations.openMocks;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import org.apache.tika.exception.BufferUnderrunException;
+import org.apache.tika.exception.TikaException;
+import org.apache.tika.io.EndianUtils;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.*;
+import org.junit.jupiter.api.*;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+@ExtendWith(MockitoExtension.class)
+public class EndianUtils_readUIntLE_4_0_Test {
+
+    @InjectMocks
+    private EndianUtils endianUtils;
+
+    @Mock
+    private InputStream mockInputStream;
+
+    @BeforeEach
+    public void setUp() {
+        openMocks(this);
+    }
+
+    @Test
+    public void testReadUIntLE() throws IOException, BufferUnderrunException {
+        // Test case 1: Normal case with valid input
+        when(mockInputStream.read()).thenReturn(0x01, 0x02, 0x03, 0x04);
+        long result = endianUtils.readUIntLE(mockInputStream);
+        assertEquals(0x04030201L, result);
+        // Test case 2: Normal case with valid input (negative values should throw BufferUnderrunException)
+        when(mockInputStream.read()).thenReturn(0xFF, 0xFF, 0xFF, 0xFF);
+        assertThrows(BufferUnderrunException.class, () -> endianUtils.readUIntLE(mockInputStream));
+        // Test case 3: Normal case with valid input (negative values should throw BufferUnderrunException)
+        when(mockInputStream.read()).thenReturn(0x01, 0x02, 0x03, 0x04);
+        long result2 = endianUtils.readUIntLE(mockInputStream);
+        assertEquals(0x04030201L, result2);
+        // Test case 4: Normal case with valid input (negative values should throw BufferUnderrunException)
+        when(mockInputStream.read()).thenReturn(0x01, 0x02, 0x03, 0x04);
+        long result3 = endianUtils.readUIntLE(mockInputStream);
+        assertEquals(0x04030201L, result3);
+        // Test case 5: Normal case with valid input (negative values should throw BufferUnderrunException)
+        when(mockInputStream.read()).thenReturn(0x01, 0x02, 0x03, 0x04);
+        long result4 = endianUtils.readUIntLE(mockInputStream);
+        assertEquals(0x04030201L, result4);
+        // Test case 6: Normal case with valid input (negative values should throw BufferUnderrunException)
+        when(mockInputStream.read()).thenReturn(0x01, 0x02, 0x03, 0x04);
+        long result5 = endianUtils.readUIntLE(mockInputStream);
+        assertEquals(0x04030201L, result5);
+        // Test case 7: Normal case with valid input (negative values should throw BufferUnderrunException)
+        when(mockInputStream.read()).thenReturn(0x01, 0x02, 0x03, 0x04);
+        long result6 = endianUtils.readUIntLE(mockInputStream);
+        assertEquals(0x04030201L, result6);
+        // Test case 8: Normal case with valid input (negative values should throw BufferUnderrunException)
+        when(mockInputStream.read()).thenReturn(0x01, 0x02, 0x03, 0x04);
+        long result7 = endianUtils.readUIntLE(mockInputStream);
+        assertEquals(0x04030201L, result7);
+        // Test case 9: Normal case with valid input (negative values should throw BufferUnderrunException)
+        when(mockInputStream.read()).thenReturn(0x01, 0x02, 0x03, 0x04);
+        long result8 = endianUtils.readUIntLE(mockInputStream);
+    }
+}
+
+--------------------------------------------
+Error in EndianUtils_readUIntLE_4_0_Test: line 3 : cannot find symbol
+  symbol:   class extension
+  location: package org.junit.jupiter.api
+Error in EndianUtils_readUIntLE_4_0_Test: line 3 : static import only from classes and interfaces
+Error in EndianUtils_readUIntLE_4_0_Test: line 8 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: package org.apache.tika.exception
+Error in EndianUtils_readUIntLE_4_0_Test: line 33 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: class org.apache.tika.io.EndianUtils_readUIntLE_4_0_Test

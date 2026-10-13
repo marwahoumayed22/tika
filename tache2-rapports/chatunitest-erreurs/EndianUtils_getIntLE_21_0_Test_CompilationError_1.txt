@@ -1,0 +1,100 @@
+package org.apache.tika.io;
+
+import org.apache.tika.io.EndianUtils;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import org.mockito.*;
+import org.junit.jupiter.api.*;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+import java.io.InputStream;
+import org.apache.tika.exception.TikaException;
+
+@ExtendWith(MockitoExtension.class)
+public class EndianUtils_getIntLE_21_0_Test {
+
+    @InjectMocks
+    private EndianUtils endianUtils;
+
+    @Mock
+    private InputStream inputStream;
+
+    @Test
+    public void testGetIntLEWithValidInput() throws IOException {
+        // Test case 1: Normal input
+        byte[] data = { 0x01, 0x02, 0x03, 0x04 };
+        int offset = 0;
+        int expected = 0x04030201;
+        assertEquals(expected, endianUtils.getIntLE(data, offset));
+        // Test case 2: Negative input
+        data = new byte[] { -0x01, -0x02, -0x03, -0x04 };
+        offset = 0;
+        // 0xFFFFFFFF is the two's complement of 0x04030201
+        expected = 0xFFFFFFFF;
+        assertEquals(expected, endianUtils.getIntLE(data, offset));
+        // Test case 3: Large positive input
+        data = new byte[] { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
+        offset = 0;
+        // 0xFFFFFFFFFFFFFFFF is the two's complement of 0x04030201
+        expected = 0xFFFFFFFFFFFFFFFF;
+        assertEquals(expected, endianUtils.getIntLE(data, offset));
+        // Test case 4: Large negative input
+        data = new byte[] { -0xFF, -0xFF, -0xFF, -0xFF, -0xFF, -0xFF, -0xFF, -0xFF };
+        offset = 0;
+        // 0x0000000000000000 is the two's complement of 0x04030201
+        expected = 0x0000000000000000;
+        assertEquals(expected, endianUtils.getIntLE(data, offset));
+    }
+
+    @Test
+    public void testGetIntLEWithInvalidOffset() throws IOException {
+        // Test case 5: Offset out of bounds
+        byte[] data = { 0x01, 0x02, 0x03, 0x04 };
+        int offset = 4;
+        try {
+            endianUtils.getIntLE(data, offset);
+        } catch (IndexOutOfBoundsException e) {
+            // Expected exception
+        }
+        // Test case 6: Offset too large
+        offset = 5;
+        try {
+            endianUtils.getIntLE(data, offset);
+        } catch (IndexOutOfBoundsException e) {
+            // Expected exception
+        }
+    }
+
+    @Test
+    public void testGetIntLEWithNegativeData() throws IOException {
+        // Test case 7: Negative data
+        byte[] data = { -0x01, -0x02, -0x03, -0x04 };
+        int offset = 0;
+        // 0xFFFFFFFF is the two's complement of 0x04030201
+        int expected = 0xFFFFFFFF;
+        assertEquals(expected, endianUtils.getIntLE(data, offset));
+    }
+
+    @Test
+    public void testGetIntLEWithZeroData() throws IOException {
+        // Test case 8: Zero data
+        byte[] data = { 0x00, 0x00, 0x00, 0x00 };
+        int offset = 0;
+        int expected = 0x00000000;
+        assertEquals(expected, endianUtils.getIntLE(data, offset));
+    }
+
+    @Test
+    public void testGetIntLEWithSingleByteData() throws IOException {
+        // Test case 9: Single byte data
+        byte[] data = { 0x01 };
+        int offset = 0;
+        int expected = 0x01;
+        assertEquals(expected, endianUtils.getIntLE(data, offset));
+    }
+}
+
+--------------------------------------------
+Error in EndianUtils_getIntLE_21_0_Test: line 41 : integer number too large

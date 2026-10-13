@@ -1,0 +1,73 @@
+package org.apache.tika.io;
+
+import static org.junit.jupiter.api.extension.ExtendWith;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import org.apache.tika.exception.TikaException;
+import org.apache.tika.io.EndianUtils;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.*;
+import org.junit.jupiter.api.*;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+@ExtendWith(MockitoExtension.class)
+public class EndianUtils_getIntBE_23_0_Test {
+
+    private EndianUtils endianUtils;
+
+    @BeforeEach
+    public void setUp() {
+        endianUtils = new EndianUtils();
+    }
+
+    @Test
+    @ExtendWith(MockitoExtension.class)
+    public void testGetIntBEWithValidData() {
+        byte[] data = { 0x12, 0x34, 0x56, 0x78 };
+        int offset = 0;
+        int expected = 0x12345678;
+        int result = endianUtils.getIntBE(data, offset);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    @ExtendWith(MockitoExtension.class)
+    public void testGetIntBEWithNegativeOffset() {
+        byte[] data = { 0x12, 0x34, 0x56, 0x78 };
+        int offset = -1;
+        assertThrows(IndexOutOfBoundsException.class, () -> endianUtils.getIntBE(data, offset));
+    }
+
+    @Test
+    @ExtendWith(MockitoExtension.class)
+    public void testGetIntBEWithOffsetOutOfRange() {
+        byte[] data = { 0x12, 0x34, 0x56, 0x78 };
+        int offset = 4;
+        assertThrows(IndexOutOfBoundsException.class, () -> endianUtils.getIntBE(data, offset));
+    }
+
+    @Test
+    @ExtendWith(MockitoExtension.class)
+    public void testGetIntBEWithNullData() {
+        byte[] data = null;
+        int offset = 0;
+        assertThrows(NullPointerException.class, () -> endianUtils.getIntBE(data, offset));
+    }
+
+    @Test
+    @ExtendWith(MockitoExtension.class)
+    public void testGetIntBEWithOffsetOutOfRangeAndNullData() {
+        byte[] data = null;
+        int offset = 4;
+        assertThrows(NullPointerException.class, () -> endianUtils.getIntBE(data, offset));
+    }
+}
+
+--------------------------------------------
+Error in EndianUtils_getIntBE_23_0_Test: line 3 : cannot find symbol
+  symbol:   class extension
+  location: package org.junit.jupiter.api
+Error in EndianUtils_getIntBE_23_0_Test: line 3 : static import only from classes and interfaces

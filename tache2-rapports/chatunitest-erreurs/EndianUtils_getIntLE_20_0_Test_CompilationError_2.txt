@@ -1,0 +1,114 @@
+package org.apache.tika.io;
+
+import static org.junit.jupiter.api.extension.ExtendWith;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import org.apache.tika.exception.TikaException;
+import org.apache.tika.io.EndianUtils;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.*;
+import org.junit.jupiter.api.*;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+@ExtendWith(MockitoExtension.class)
+public class EndianUtils_getIntLE_20_0_Test {
+
+    @InjectMocks
+    private EndianUtils endianUtils;
+
+    @Mock
+    private InputStream inputStream;
+
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    public void testGetIntLEWithValidData() throws IOException {
+        // Arrange
+        byte[] data = { 0x01, 0x02, 0x03, 0x04 };
+        when(inputStream.read(data)).thenReturn(4);
+        when(inputStream.read()).thenReturn(-1);
+        // Act
+        int result = endianUtils.getIntLE(data);
+        // Assert
+        assertEquals(0x04030201, result);
+        verify(inputStream).read(data);
+        verify(inputStream).read();
+    }
+
+    @Test
+    public void testGetIntLEWithNegativeOffset() {
+        // Arrange
+        byte[] data = { 0x01, 0x02, 0x03, 0x04 };
+        // Act
+        int result = endianUtils.getIntLE(data, -1);
+        // Assert
+        assertEquals(0x04030201, result);
+    }
+
+    @Test
+    public void testGetIntLEWithOffsetOutOfRange() {
+        // Arrange
+        byte[] data = { 0x01, 0x02, 0x03, 0x04 };
+        // Act
+        int result = endianUtils.getIntLE(data, 5);
+        // Assert
+        assertEquals(0x04030201, result);
+    }
+
+    @Test
+    public void testGetIntLEWithEmptyData() throws IOException {
+        // Arrange
+        byte[] data = {};
+        when(inputStream.read(data)).thenReturn(-1);
+        // Act
+        int result = endianUtils.getIntLE(data);
+        // Assert
+        assertEquals(0, result);
+        verify(inputStream).read(data);
+        verify(inputStream).read();
+    }
+
+    @Test
+    public void testGetIntLEWithNullData() throws IOException {
+        // Arrange
+        byte[] data = null;
+        // Act
+        int result = endianUtils.getIntLE(data);
+        // Assert
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testGetIntLEWithIOException() throws IOException {
+        // Arrange
+        byte[] data = { 0x01, 0x02, 0x03, 0x04 };
+        when(inputStream.read(data)).thenThrow(new IOException("Test exception"));
+        // Act
+        assertThrows(IOException.class, () -> endianUtils.getIntLE(data));
+        // Assert
+        verify(inputStream).read(data);
+    }
+
+    @Test
+    public void testGetIntLEWithTikaException() throws IOException {
+        // Arrange
+        byte[] data = { 0x01, 0x02, 0x03, 0x04 };
+        when(inputStream.read(data)).thenThrow(new TikaException("Test exception"));
+        // Act
+        assertThrows(TikaException.class, () -> endianUtils.getIntLE(data));
+        // Assert
+        verify(inputStream).read(data);
+    }
+}
+
+--------------------------------------------
+Error in EndianUtils_getIntLE_20_0_Test: line 3 : cannot find symbol
+  symbol:   class extension
+  location: package org.junit.jupiter.api
+Error in EndianUtils_getIntLE_20_0_Test: line 3 : static import only from classes and interfaces

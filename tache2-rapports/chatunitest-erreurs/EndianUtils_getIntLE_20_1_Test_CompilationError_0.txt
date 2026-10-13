@@ -1,0 +1,106 @@
+package org.apache.tika.io;
+
+import static org.junit.jupiter.api.extension.ExtendWith;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.concurrent.TimeUnit;
+import org.apache.tika.io.EndianUtils;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.*;
+import org.junit.jupiter.api.*;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+import java.io.InputStream;
+import org.apache.tika.exception.TikaException;
+
+@ExtendWith(MockitoExtension.class)
+public class EndianUtils_getIntLE_20_1_Test {
+
+    private EndianUtils endianUtils;
+
+    @BeforeEach
+    public void setUp() {
+        endianUtils = new EndianUtils();
+    }
+
+    @Test
+    public void testGetIntLEWithValidData() throws IOException {
+        byte[] data = { 0x01, 0x02, 0x03, 0x04 };
+        int result = endianUtils.getIntLE(data);
+        assertEquals(0x04030201, result);
+    }
+
+    @Test
+    public void testGetIntLEWithOffset() throws IOException {
+        byte[] data = { 0x01, 0x02, 0x03, 0x04 };
+        int result = endianUtils.getIntLE(data, 1);
+        assertEquals(0x02030401, result);
+    }
+
+    @Test
+    public void testGetIntLEWithNegativeOffset() {
+        byte[] data = { 0x01, 0x02, 0x03, 0x04 };
+        assertThrows(IndexOutOfBoundsException.class, () -> endianUtils.getIntLE(data, -1));
+    }
+
+    @Test
+    public void testGetIntLEWithOffsetOutOfRange() {
+        byte[] data = { 0x01, 0x02, 0x03, 0x04 };
+        assertThrows(IndexOutOfBoundsException.class, () -> endianUtils.getIntLE(data, 4));
+    }
+
+    @Test
+    public void testGetIntLEWithNullData() {
+        assertThrows(NullPointerException.class, () -> endianUtils.getIntLE(null));
+    }
+
+    @Test
+    public void testGetIntLEWithEmptyData() {
+        assertThrows(IndexOutOfBoundsException.class, () -> endianUtils.getIntLE(new byte[0]));
+    }
+
+    @Test
+    public void testGetIntLEWithSingleByteData() {
+        byte[] data = { 0x01 };
+        assertThrows(IndexOutOfBoundsException.class, () -> endianUtils.getIntLE(data));
+    }
+
+    @Test
+    public void testGetIntLEWithTwoByteData() {
+        byte[] data = { 0x01, 0x02 };
+        assertThrows(IndexOutOfBoundsException.class, () -> endianUtils.getIntLE(data));
+    }
+
+    @Test
+    public void testGetIntLEWithThreeByteData() {
+        byte[] data = { 0x01, 0x02, 0x03 };
+        assertThrows(IndexOutOfBoundsException.class, () -> endianUtils.getIntLE(data));
+    }
+
+    @Test
+    public void testGetIntLEWithFourByteData() {
+        byte[] data = { 0x01, 0x02, 0x03, 0x04 };
+        int result = endianUtils.getIntLE(data);
+        assertEquals(0x04030201, result);
+    }
+
+    @Test
+    public void testGetIntLEWithFiveByteData() {
+        byte[] data = { 0x01, 0x02, 0x03, 0x04, 0x05 };
+        assertThrows(IndexOutOfBoundsException.class, () -> endianUtils.getIntLE(data));
+    }
+
+    @Test
+    public void testGetIntLEWithSixByteData() {
+        byte[] data = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 };
+        assertThrows(IndexOutOfBoundsException.class, () -> endianUtils.getIntLE(data));
+    }
+}
+
+--------------------------------------------
+Error in EndianUtils_getIntLE_20_1_Test: line 3 : cannot find symbol
+  symbol:   class extension
+  location: package org.junit.jupiter.api
+Error in EndianUtils_getIntLE_20_1_Test: line 3 : static import only from classes and interfaces

@@ -1,0 +1,89 @@
+package org.apache.tika.io;
+
+import static org.junit.jupiter.api.extension.ExtendWith;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import org.apache.tika.io.EndianUtils;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.*;
+import org.junit.jupiter.api.*;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+import org.mockito.junit.jupiter.MockitoExtension;
+import java.io.InputStream;
+import org.apache.tika.exception.TikaException;
+
+@ExtendWith(MockitoExtension.class)
+public class EndianUtils_getShortBE_17_0_Test {
+
+    @Mock
+    private InputStream inputStream;
+
+    @BeforeEach
+    public void setUp() throws IOException {
+        byte[] data = { 0x01, 0x02 };
+        when(inputStream.read(data)).thenReturn(2);
+        // End of stream
+        when(inputStream.read()).thenReturn(-1);
+    }
+
+    @Test
+    public void testGetShortBE() throws IOException {
+        byte[] data = { 0x01, 0x02 };
+        int offset = 0;
+        // Call the method using reflection
+        Method method = EndianUtils.class.getDeclaredMethod("getShortBE", byte[].class, int.class);
+        method.setAccessible(true);
+        short result = (short) method.invoke(null, data, offset);
+        // Verify the result
+        assertEquals(0x0201, result, "The short value should be 0x0201");
+    }
+
+    @Test
+    public void testGetShortBEWithNegativeOffset() {
+        byte[] data = { 0x01, 0x02 };
+        int offset = -1;
+        // Call the method using reflection
+        Method method = EndianUtils.class.getDeclaredMethod("getShortBE", byte[].class, int.class);
+        method.setAccessible(true);
+        assertThrows(IndexOutOfBoundsException.class, () -> method.invoke(null, data, offset), "IndexOutOfBoundsException should be thrown");
+    }
+
+    @Test
+    public void testGetShortBEWithOffsetOutOfRange() {
+        byte[] data = { 0x01, 0x02 };
+        int offset = 2;
+        // Call the method using reflection
+        Method method = EndianUtils.class.getDeclaredMethod("getShortBE", byte[].class, int.class);
+        method.setAccessible(true);
+        assertThrows(IndexOutOfBoundsException.class, () -> method.invoke(null, data, offset), "IndexOutOfBoundsException should be thrown");
+    }
+
+    @Test
+    public void testGetShortBEWithEmptyArray() {
+        byte[] data = {};
+        int offset = 0;
+        // Call the method using reflection
+        Method method = EndianUtils.class.getDeclaredMethod("getShortBE", byte[].class, int.class);
+        method.setAccessible(true);
+        assertThrows(IndexOutOfBoundsException.class, () -> method.invoke(null, data, offset), "IndexOutOfBoundsException should be thrown");
+    }
+
+    @Test
+    public void testGetShortBEWithNullArray() {
+        byte[] data = null;
+        int offset = 0;
+        // Call the method using reflection
+        Method method = EndianUtils.class.getDeclaredMethod("getShortBE", byte[].class, int.class);
+        method.setAccessible(true);
+        assertThrows(NullPointerException.class, () -> method.invoke(null, data, offset), "NullPointerException should be thrown");
+    }
+}
+
+--------------------------------------------
+Error in EndianUtils_getShortBE_17_0_Test: line 3 : cannot find symbol
+  symbol:   class extension
+  location: package org.junit.jupiter.api
+Error in EndianUtils_getShortBE_17_0_Test: line 3 : static import only from classes and interfaces

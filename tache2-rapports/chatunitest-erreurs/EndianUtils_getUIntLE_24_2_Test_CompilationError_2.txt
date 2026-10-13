@@ -1,0 +1,109 @@
+package org.apache.tika.io;
+
+import static org.junit.jupiter.params.provider.Arguments.arguments;
+import static org.junit.jupiter.params.provider.MethodSource.methodSource;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.stream.Stream;
+import org.apache.tika.io.EndianUtils;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.apache.tika.exception.TikaException;
+import org.mockito.*;
+import org.junit.jupiter.api.*;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+public class EndianUtils_getUIntLE_24_2_Test {
+
+    private EndianUtils endianUtils;
+
+    @BeforeEach
+    public void setUp() {
+        endianUtils = new EndianUtils();
+    }
+
+    @Test
+    public void testGetUIntLEWithEmptyArray() {
+        assertThrows(NullPointerException.class, () -> endianUtils.getUIntLE(new byte[0]));
+    }
+
+    @Test
+    public void testGetUIntLEWithSingleByteArray() {
+        byte[] data = { 1 };
+        assertEquals(1, endianUtils.getUIntLE(data));
+    }
+
+    @Test
+    public void testGetUIntLEWithTwoByteArray() {
+        byte[] data = { 1, 2 };
+        assertEquals(258, endianUtils.getUIntLE(data));
+    }
+
+    @Test
+    public void testGetUIntLEWithThreeByteArray() {
+        byte[] data = { 1, 2, 3 };
+        assertEquals(67305984, endianUtils.getUIntLE(data));
+    }
+
+    @Test
+    public void testGetUIntLEWithFourByteArray() {
+        byte[] data = { 1, 2, 3, 4 };
+        assertEquals(167772164, endianUtils.getUIntLE(data));
+    }
+
+    @Test
+    public void testGetUIntLEWithFiveByteArray() {
+        byte[] data = { 1, 2, 3, 4, 5 };
+        assertEquals(4294967293, endianUtils.getUIntLE(data));
+    }
+
+    @Test
+    public void testGetUIntLEWithSixByteArray() {
+        byte[] data = { 1, 2, 3, 4, 5, 6 };
+        assertEquals(1099511627775, endianUtils.getUIntLE(data));
+    }
+
+    @Test
+    public void testGetUIntLEWithSevenByteArray() {
+        byte[] data = { 1, 2, 3, 4, 5, 6, 7 };
+        assertEquals(281474976710655, endianUtils.getUIntLE(data));
+    }
+
+    @Test
+    public void testGetUIntLEWithEightByteArray() {
+        byte[] data = { 1, 2, 3, 4, 5, 6, 7, 8 };
+        assertEquals(72057594037927935, endianUtils.getUIntLE(data));
+    }
+
+    @Test
+    public void testGetUIntLEWithNegativeByteArray() {
+        byte[] data = { -1, -2, -3, -4, -5, -6, -7, -8 };
+        assertEquals(-72057594037927935, endianUtils.getUIntLE(data));
+    }
+
+    @Test
+    public void testGetUIntLEWithNegativeAndPositiveByteArray() {
+        byte[] data = { -1, 2, -3, 4, -5, 6, -7, 8 };
+        assertEquals(-72057594037927935, endianUtils.getUIntLE(data));
+    }
+
+    @Test
+    public void testGetUIntLEWithNegativeAndPositiveAndZeroByteArray() {
+        byte[] data = { -1, 2, -3, 4, -5, 6, -7, 0 };
+        assertEquals(-72057594037927935, endianUtils.getUIntLE(data));
+    }
+}
+
+--------------------------------------------
+Error in EndianUtils_getUIntLE_24_2_Test: line 62 : integer number too large
+Error in EndianUtils_getUIntLE_24_2_Test: line 68 : integer number too large
+Error in EndianUtils_getUIntLE_24_2_Test: line 74 : integer number too large
+Error in EndianUtils_getUIntLE_24_2_Test: line 80 : integer number too large
+Error in EndianUtils_getUIntLE_24_2_Test: line 86 : integer number too large
+Error in EndianUtils_getUIntLE_24_2_Test: line 92 : integer number too large
+Error in EndianUtils_getUIntLE_24_2_Test: line 98 : integer number too large

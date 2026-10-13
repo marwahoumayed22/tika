@@ -1,0 +1,131 @@
+package org.apache.tika.io;
+
+import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
+import static org.junit.jupiter.params.ParameterizedTest;
+import static org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+import org.mockito.*;
+import org.junit.jupiter.api.*;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+import java.io.InputStream;
+import org.apache.tika.exception.TikaException;
+
+@TestInstance(PER_CLASS)
+public class EndianUtils_getShortLE_12_2_Test {
+
+    private EndianUtils endianUtils;
+
+    @BeforeAll
+    public void setUp() {
+        endianUtils = new EndianUtils();
+    }
+
+    @BeforeEach
+    public void beforeEach() {
+        // Reset any state or setup needed before each test
+    }
+
+    @Test
+    public void testGetShortLEWithValidData() {
+        byte[] data = { 0x01, 0x02 };
+        short expected = 0x0201;
+        short result = endianUtils.getShortLE(data);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testGetShortLEWithNegativeData() {
+        byte[] data = { 0xFF, 0xFF };
+        short expected = -1;
+        short result = endianUtils.getShortLE(data);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testGetShortLEWithZeroData() {
+        byte[] data = { 0x00, 0x00 };
+        short expected = 0;
+        short result = endianUtils.getShortLE(data);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testGetShortLEWithSingleByteData() {
+        byte[] data = { 0x01 };
+        assertThrows(IllegalArgumentException.class, () -> endianUtils.getShortLE(data));
+    }
+
+    @Test
+    public void testGetShortLEWithEmptyData() {
+        byte[] data = {};
+        assertThrows(IllegalArgumentException.class, () -> endianUtils.getShortLE(data));
+    }
+
+    @Test
+    public void testGetShortLEWithLargeData() {
+        byte[] data = new byte[1024];
+        for (int i = 0; i < data.length; i++) {
+            data[i] = (byte) i;
+        }
+        short expected = 0x0001;
+        short result = endianUtils.getShortLE(data);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testGetShortLEWithTimeout() {
+        byte[] data = new byte[1024];
+        for (int i = 0; i < data.length; i++) {
+            data[i] = (byte) i;
+        }
+        assertTimeoutPreemptively(100, () -> {
+            short result = endianUtils.getShortLE(data);
+            assertEquals(0x0001, result);
+        }, TimeUnit.MILLISECONDS);
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 })
+    public void testGetShortLEWithOffset(int offset) {
+        byte[] data = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
+        short expected = 0x0807;
+        short result = endianUtils.getShortLE(data, offset);
+        assertEquals(expected, result);
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 })
+    public void testGetShortLEWithOffsetAndNegativeData(int offset) {
+        byte[] data = { 0xFF, 0xFE, 0xFD, 0xFC, 0xFB, 0xFA, 0xF9, 0xF8 };
+        short expected = -1;
+        short result = endianUtils.getShortLE(data, offset);
+        assertEquals(expected, result);
+    }
+}
+
+--------------------------------------------
+Error in EndianUtils_getShortLE_12_2_Test: line 4 : cannot find symbol
+  symbol:   class params
+  location: package org.junit.jupiter
+Error in EndianUtils_getShortLE_12_2_Test: line 4 : static import only from classes and interfaces
+Error in EndianUtils_getShortLE_12_2_Test: line 5 : cannot find symbol
+  symbol:   class provider
+  location: package org.junit.jupiter.params
+Error in EndianUtils_getShortLE_12_2_Test: line 5 : static import only from classes and interfaces
+Error in EndianUtils_getShortLE_12_2_Test: line 92 : cannot find symbol
+  symbol:   class ParameterizedTest
+  location: class org.apache.tika.io.EndianUtils_getShortLE_12_2_Test
+Error in EndianUtils_getShortLE_12_2_Test: line 93 : cannot find symbol
+  symbol:   class ValueSource
+  location: class org.apache.tika.io.EndianUtils_getShortLE_12_2_Test
+Error in EndianUtils_getShortLE_12_2_Test: line 101 : cannot find symbol
+  symbol:   class ParameterizedTest
+  location: class org.apache.tika.io.EndianUtils_getShortLE_12_2_Test
+Error in EndianUtils_getShortLE_12_2_Test: line 102 : cannot find symbol
+  symbol:   class ValueSource
+  location: class org.apache.tika.io.EndianUtils_getShortLE_12_2_Test

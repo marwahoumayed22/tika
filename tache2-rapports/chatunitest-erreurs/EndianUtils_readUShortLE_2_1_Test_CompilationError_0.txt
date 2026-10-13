@@ -1,0 +1,143 @@
+package org.apache.tika.io;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import org.apache.tika.exception.BufferUnderrunException;
+import org.apache.tika.exception.TikaException;
+import org.mockito.*;
+import org.junit.jupiter.api.*;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+public class EndianUtils_readUShortLE_2_1_Test {
+
+    private EndianUtils endianUtils;
+
+    private InputStream inputStream;
+
+    @BeforeEach
+    public void setUp() {
+        endianUtils = new EndianUtils();
+        inputStream = mock(InputStream.class);
+    }
+
+    @Test
+    public void testReadUShortLE_Success() throws IOException, BufferUnderrunException {
+        // Arrange
+        when(inputStream.read()).thenReturn(0x01, 0x02);
+        // Act
+        int result = endianUtils.readUShortLE(inputStream);
+        // Assert
+        assertEquals(0x0201, result);
+    }
+
+    @Test
+    public void testReadUShortLE_InvalidInput() throws IOException, BufferUnderrunException {
+        // Arrange
+        when(inputStream.read()).thenReturn(-1, 0x02);
+        // Act & Assert
+        assertThrows(BufferUnderrunException.class, () -> endianUtils.readUShortLE(inputStream));
+    }
+
+    @Test
+    public void testReadUShortLE_BufferUnderrunException() throws IOException, BufferUnderrunException {
+        // Arrange
+        when(inputStream.read()).thenReturn(0x01);
+        // Act & Assert
+        assertThrows(BufferUnderrunException.class, () -> endianUtils.readUShortLE(inputStream));
+    }
+
+    @Test
+    public void testReadUShortLE_BufferUnderrunException_MultipleReads() throws IOException, BufferUnderrunException {
+        // Arrange
+        when(inputStream.read()).thenReturn(-1, 0x02);
+        // Act & Assert
+        assertThrows(BufferUnderrunException.class, () -> endianUtils.readUShortLE(inputStream));
+    }
+
+    @Test
+    public void testReadUShortLE_IOException() throws IOException, BufferUnderrunException {
+        // Arrange
+        when(inputStream.read()).thenThrow(IOException.class);
+        // Act & Assert
+        assertThrows(IOException.class, () -> endianUtils.readUShortLE(inputStream));
+    }
+
+    @Test
+    public void testReadUShortLE_IOException_MultipleReads() throws IOException, BufferUnderrunException {
+        // Arrange
+        when(inputStream.read()).thenReturn(-1, 0x02);
+        // Act & Assert
+        assertThrows(IOException.class, () -> endianUtils.readUShortLE(inputStream));
+    }
+
+    @Test
+    public void testReadUShortLE_IOException_BufferUnderrunException() throws IOException, BufferUnderrunException {
+        // Arrange
+        when(inputStream.read()).thenReturn(-1, 0x02);
+        // Act & Assert
+        assertThrows(IOException.class, () -> endianUtils.readUShortLE(inputStream));
+    }
+
+    @Test
+    public void testReadUShortLE_IOException_BufferUnderrunException_MultipleReads() throws IOException, BufferUnderrunException {
+        // Arrange
+        when(inputStream.read()).thenReturn(-1, 0x02);
+        // Act & Assert
+        assertThrows(IOException.class, () -> endianUtils.readUShortLE(inputStream));
+    }
+
+    @Test
+    public void testReadUShortLE_IOException_BufferUnderrunException_MultipleReads_WithException() throws IOException, BufferUnderrunException {
+        // Arrange
+        when(inputStream.read()).thenReturn(-1, 0x02);
+        // Act & Assert
+        assertThrows(IOException.class, () -> endianUtils.readUShortLE(inputStream));
+    }
+
+    @Test
+    public void testReadUShortLE_IOException_BufferUnderrunException_MultipleReads_WithException_MultipleReads() throws IOException, BufferUnderrunException {
+        // Arrange
+        when(inputStream.read()).thenReturn(-1, 0x02);
+        // Act & Assert
+        assertThrows(IOException.class, () -> endianUtils.readUShortLE(inputStream));
+    }
+}
+
+--------------------------------------------
+Error in EndianUtils_readUShortLE_2_1_Test: line 6 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: package org.apache.tika.exception
+Error in EndianUtils_readUShortLE_2_1_Test: line 28 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: class org.apache.tika.io.EndianUtils_readUShortLE_2_1_Test
+Error in EndianUtils_readUShortLE_2_1_Test: line 38 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: class org.apache.tika.io.EndianUtils_readUShortLE_2_1_Test
+Error in EndianUtils_readUShortLE_2_1_Test: line 46 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: class org.apache.tika.io.EndianUtils_readUShortLE_2_1_Test
+Error in EndianUtils_readUShortLE_2_1_Test: line 54 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: class org.apache.tika.io.EndianUtils_readUShortLE_2_1_Test
+Error in EndianUtils_readUShortLE_2_1_Test: line 62 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: class org.apache.tika.io.EndianUtils_readUShortLE_2_1_Test
+Error in EndianUtils_readUShortLE_2_1_Test: line 70 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: class org.apache.tika.io.EndianUtils_readUShortLE_2_1_Test
+Error in EndianUtils_readUShortLE_2_1_Test: line 78 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: class org.apache.tika.io.EndianUtils_readUShortLE_2_1_Test
+Error in EndianUtils_readUShortLE_2_1_Test: line 86 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: class org.apache.tika.io.EndianUtils_readUShortLE_2_1_Test
+Error in EndianUtils_readUShortLE_2_1_Test: line 94 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: class org.apache.tika.io.EndianUtils_readUShortLE_2_1_Test
+Error in EndianUtils_readUShortLE_2_1_Test: line 102 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: class org.apache.tika.io.EndianUtils_readUShortLE_2_1_Test

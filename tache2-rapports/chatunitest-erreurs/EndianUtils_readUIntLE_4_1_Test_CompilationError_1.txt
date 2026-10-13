@@ -1,0 +1,98 @@
+package org.apache.tika.io;
+
+import static org.junit.jupiter.api.extension.ExtendWith;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Method;
+import org.apache.tika.exception.BufferUnderrunException;
+import org.apache.tika.exception.TikaException;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.*;
+import org.junit.jupiter.api.*;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+@ExtendWith(MockitoExtension.class)
+public class EndianUtils_readUIntLE_4_1_Test {
+
+    @Mock
+    private InputStream mockInputStream;
+
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    public void testReadUIntLE_NormalOperation() throws IOException, BufferUnderrunException {
+        // Arrange
+        int[] expectedValues = { 0x12345678, 0x9ABCDEF0, 0x00000000, 0xFFFFFFFF };
+        int[] bytesRead = { 0, 0, 0, 0 };
+        for (int i = 0; i < expectedValues.length; i++) {
+            bytesRead[i] = expectedValues[i];
+        }
+        when(mockInputStream.read()).thenReturn(bytesRead);
+        // Act
+        long result = invokePrivateMethod(EndianUtils.class, "readUIntLE", mockInputStream);
+        // Assert
+        assertEquals(expectedValues[0], result);
+        verify(mockInputStream, times(1)).read();
+        verify(mockInputStream, times(1)).read();
+        verify(mockInputStream, times(1)).read();
+        verify(mockInputStream, times(1)).read();
+    }
+
+    @Test
+    public void testReadUIntLE_BufferUnderrun() throws IOException, BufferUnderrunException {
+        // Arrange
+        when(mockInputStream.read()).thenReturn(-1);
+        // Act
+        try {
+            invokePrivateMethod(EndianUtils.class, "readUIntLE", mockInputStream);
+            fail("Expected BufferUnderrunException");
+        } catch (BufferUnderrunException e) {
+            // Assert
+            assertEquals("Buffer underrun", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testReadUIntLE_IOException() throws IOException, BufferUnderrunException {
+        // Arrange
+        when(mockInputStream.read()).thenThrow(new IOException("Test IOException"));
+        // Act
+        try {
+            invokePrivateMethod(EndianUtils.class, "readUIntLE", mockInputStream);
+            fail("Expected IOException");
+        } catch (IOException e) {
+            // Assert
+            assertEquals("Test IOException", e.getMessage());
+        }
+    }
+
+    private long invokePrivateMethod(Class<?> clazz, String methodName, Object... args) throws Exception {
+        Method method = clazz.getDeclaredMethod(methodName, args.getClass());
+        method.setAccessible(true);
+        return (Long) method.invoke(null, args);
+    }
+}
+
+--------------------------------------------
+Error in EndianUtils_readUIntLE_4_1_Test: line 3 : cannot find symbol
+  symbol:   class extension
+  location: package org.junit.jupiter.api
+Error in EndianUtils_readUIntLE_4_1_Test: line 3 : static import only from classes and interfaces
+Error in EndianUtils_readUIntLE_4_1_Test: line 8 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: package org.apache.tika.exception
+Error in EndianUtils_readUIntLE_4_1_Test: line 29 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: class org.apache.tika.io.EndianUtils_readUIntLE_4_1_Test
+Error in EndianUtils_readUIntLE_4_1_Test: line 48 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: class org.apache.tika.io.EndianUtils_readUIntLE_4_1_Test
+Error in EndianUtils_readUIntLE_4_1_Test: line 62 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: class org.apache.tika.io.EndianUtils_readUIntLE_4_1_Test

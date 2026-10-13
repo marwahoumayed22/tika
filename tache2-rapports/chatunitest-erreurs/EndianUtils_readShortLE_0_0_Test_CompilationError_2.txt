@@ -1,0 +1,142 @@
+package org.apache.tika.io;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import org.apache.tika.exception.BufferUnderrunException;
+import org.apache.tika.io.EndianUtils;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.apache.tika.exception.TikaException;
+import org.mockito.*;
+import org.junit.jupiter.api.*;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+public class EndianUtils_readShortLE_0_0_Test {
+
+    private InputStream inputStream;
+
+    private EndianUtils endianUtils;
+
+    @BeforeEach
+    public void setUp() {
+        endianUtils = new EndianUtils();
+        inputStream = mock(InputStream.class);
+    }
+
+    @Test
+    public void testReadShortLE_Normal() throws IOException, BufferUnderrunException {
+        // Arrange
+        when(inputStream.read()).thenReturn(0x01, 0x02);
+        // Act
+        short result = endianUtils.readShortLE(inputStream);
+        // Assert
+        assertEquals(0x0201, result);
+        verify(inputStream, times(2)).read();
+    }
+
+    @Test
+    public void testReadShortLE_InvalidInput() throws IOException, BufferUnderrunException {
+        // Arrange
+        when(inputStream.read()).thenReturn(0x01, -1);
+        // Act & Assert
+        assertThrows(BufferUnderrunException.class, () -> endianUtils.readShortLE(inputStream));
+        verify(inputStream, times(2)).read();
+    }
+
+    @Test
+    public void testReadShortLE_InvalidInput2() throws IOException, BufferUnderrunException {
+        // Arrange
+        when(inputStream.read()).thenReturn(-1, 0x01);
+        // Act & Assert
+        assertThrows(BufferUnderrunException.class, () -> endianUtils.readShortLE(inputStream));
+        verify(inputStream, times(2)).read();
+    }
+
+    @Test
+    public void testReadShortLE_InvalidInput3() throws IOException, BufferUnderrunException {
+        // Arrange
+        when(inputStream.read()).thenReturn(0x01, 0x02, -1);
+        // Act & Assert
+        assertThrows(BufferUnderrunException.class, () -> endianUtils.readShortLE(inputStream));
+        verify(inputStream, times(3)).read();
+    }
+
+    @Test
+    public void testReadShortLE_InvalidInput4() throws IOException, BufferUnderrunException {
+        // Arrange
+        when(inputStream.read()).thenReturn(-1, 0x01, 0x02);
+        // Act & Assert
+        assertThrows(BufferUnderrunException.class, () -> endianUtils.readShortLE(inputStream));
+        verify(inputStream, times(3)).read();
+    }
+
+    @Test
+    public void testReadShortLE_InvalidInput5() throws IOException, BufferUnderrunException {
+        // Arrange
+        when(inputStream.read()).thenReturn(0x01, 0x02, 0x03);
+        // Act & Assert
+        assertThrows(BufferUnderrunException.class, () -> endianUtils.readShortLE(inputStream));
+        verify(inputStream, times(3)).read();
+    }
+
+    @Test
+    public void testReadShortLE_InvalidInput6() throws IOException, BufferUnderrunException {
+        // Arrange
+        when(inputStream.read()).thenReturn(-1, 0x01, 0x02, 0x03);
+        // Act & Assert
+        assertThrows(BufferUnderrunException.class, () -> endianUtils.readShortLE(inputStream));
+        verify(inputStream, times(4)).read();
+    }
+
+    @Test
+    public void testReadShortLE_InvalidInput7() throws IOException, BufferUnderrunException {
+        // Arrange
+        when(inputStream.read()).thenReturn(0x01, 0x02, 0x03, -1);
+        // Act & Assert
+        assertThrows(BufferUnderrunException.class, () -> endianUtils.readShortLE(inputStream));
+        verify(inputStream, times(4)).read();
+    }
+
+    @Test
+    public void testReadShortLE_InvalidInput8() throws IOException, BufferUnderrunException {
+        // Arrange
+        when(inputStream.read()).thenReturn(-1, 0x01, 0x02, 0x03, -1);
+        // Act & Assert
+        assertThrows(BufferUnderrunException.class, () -> endianUtils.readShortLE(inputStream));
+        verify(inputStream, times(5)).read();
+    }
+}
+
+--------------------------------------------
+Error in EndianUtils_readShortLE_0_0_Test: line 6 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: package org.apache.tika.exception
+Error in EndianUtils_readShortLE_0_0_Test: line 29 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: class org.apache.tika.io.EndianUtils_readShortLE_0_0_Test
+Error in EndianUtils_readShortLE_0_0_Test: line 40 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: class org.apache.tika.io.EndianUtils_readShortLE_0_0_Test
+Error in EndianUtils_readShortLE_0_0_Test: line 49 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: class org.apache.tika.io.EndianUtils_readShortLE_0_0_Test
+Error in EndianUtils_readShortLE_0_0_Test: line 58 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: class org.apache.tika.io.EndianUtils_readShortLE_0_0_Test
+Error in EndianUtils_readShortLE_0_0_Test: line 67 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: class org.apache.tika.io.EndianUtils_readShortLE_0_0_Test
+Error in EndianUtils_readShortLE_0_0_Test: line 76 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: class org.apache.tika.io.EndianUtils_readShortLE_0_0_Test
+Error in EndianUtils_readShortLE_0_0_Test: line 85 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: class org.apache.tika.io.EndianUtils_readShortLE_0_0_Test
+Error in EndianUtils_readShortLE_0_0_Test: line 94 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: class org.apache.tika.io.EndianUtils_readShortLE_0_0_Test
+Error in EndianUtils_readShortLE_0_0_Test: line 103 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: class org.apache.tika.io.EndianUtils_readShortLE_0_0_Test

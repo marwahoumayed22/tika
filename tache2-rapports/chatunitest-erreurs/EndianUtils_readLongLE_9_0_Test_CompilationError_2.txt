@@ -1,0 +1,72 @@
+package org.apache.tika.io;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import org.apache.tika.exception.BufferUnderrunException;
+import org.apache.tika.io.EndianUtils;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.apache.tika.exception.TikaException;
+import org.mockito.*;
+import org.junit.jupiter.api.*;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+public class EndianUtils_readLongLE_9_0_Test {
+
+    private InputStream inputStream;
+
+    private EndianUtils endianUtils;
+
+    @BeforeEach
+    public void setUp() {
+        endianUtils = new EndianUtils();
+        inputStream = mock(InputStream.class);
+    }
+
+    @Test
+    public void testReadLongLE() throws IOException {
+        // Test with a valid input stream
+        when(inputStream.read()).thenReturn(0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08);
+        assertEquals(0x0102030405060708L, endianUtils.readLongLE(inputStream));
+        // Test with a negative byte value
+        when(inputStream.read()).thenReturn(0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, -1);
+        assertThrows(BufferUnderrunException.class, () -> endianUtils.readLongLE(inputStream));
+        // Test with a valid input stream of length less than 8
+        when(inputStream.read()).thenReturn(0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07);
+        assertThrows(BufferUnderrunException.class, () -> endianUtils.readLongLE(inputStream));
+        // Test with a valid input stream of length exactly 8
+        when(inputStream.read()).thenReturn(0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08);
+        assertEquals(0x0102030405060708L, endianUtils.readLongLE(inputStream));
+        // Test with a valid input stream of length greater than 8
+        when(inputStream.read()).thenReturn(0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09);
+        assertEquals(0x0102030405060708L, endianUtils.readLongLE(inputStream));
+    }
+
+    @Test
+    public void testReadLongLEWithNegativeByte() throws IOException {
+        // Test with a negative byte value
+        when(inputStream.read()).thenReturn(0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, -1);
+        assertThrows(BufferUnderrunException.class, () -> endianUtils.readLongLE(inputStream));
+    }
+
+    @Test
+    public void testReadLongLEWithLengthLessThan8() throws IOException {
+        // Test with a valid input stream of length less than 8
+        when(inputStream.read()).thenReturn(0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07);
+        assertThrows(BufferUnderrunException.class, () -> endianUtils.readLongLE(inputStream));
+    }
+
+    @Test
+    public void testReadLongLEWithLengthExactly8() throws IOException {
+        // Test with a valid input stream of length exactly 8
+        when(inputStream.read()).thenReturn(0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08);
+        assertEquals(0x0102030405060708L, endianUtils.readLongLE(inputStream));
+    }
+}
+
+--------------------------------------------
+Error in EndianUtils_readLongLE_9_0_Test: line 6 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: package org.apache.tika.exception

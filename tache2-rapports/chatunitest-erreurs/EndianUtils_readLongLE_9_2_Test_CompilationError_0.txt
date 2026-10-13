@@ -1,0 +1,121 @@
+package org.apache.tika.io;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import org.apache.tika.exception.BufferUnderrunException;
+import org.apache.tika.io.EndianUtils;
+import org.mockito.*;
+import org.junit.jupiter.api.*;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.apache.tika.exception.TikaException;
+
+public class EndianUtils_readLongLE_9_2_Test {
+
+    private InputStream inputStream;
+
+    private EndianUtils endianUtils;
+
+    @BeforeEach
+    public void setUp() {
+        endianUtils = new EndianUtils();
+        inputStream = mock(InputStream.class);
+    }
+
+    @Test
+    public void testReadLongLEWithValidInput() throws IOException {
+        // Arrange
+        int[] expectedBytes = { 0x01, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF };
+        when(inputStream.read()).thenReturn(expectedBytes);
+        // Act
+        long result = endianUtils.readLongLE(inputStream);
+        // Assert
+        assertEquals(0xEFCDAB8967452301L, result);
+    }
+
+    @Test
+    public void testReadLongLEWithNegativeByte() throws IOException {
+        // Arrange
+        int[] expectedBytes = { 0x01, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, -1 };
+        when(inputStream.read()).thenReturn(expectedBytes);
+        // Act
+        assertThrows(BufferUnderrunException.class, () -> endianUtils.readLongLE(inputStream));
+    }
+
+    @Test
+    public void testReadLongLEWithBufferUnderrun() throws IOException {
+        // Arrange
+        when(inputStream.read()).thenReturn(-1);
+        // Act
+        assertThrows(BufferUnderrunException.class, () -> endianUtils.readLongLE(inputStream));
+    }
+
+    @Test
+    public void testReadLongLEWithEmptyInput() throws IOException {
+        // Arrange
+        when(inputStream.read()).thenReturn(-1);
+        // Act
+        assertThrows(BufferUnderrunException.class, () -> endianUtils.readLongLE(inputStream));
+    }
+
+    @Test
+    public void testReadLongLEWithSingleByteInput() throws IOException {
+        // Arrange
+        int[] expectedBytes = { 0x01 };
+        when(inputStream.read()).thenReturn(expectedBytes);
+        // Act
+        assertThrows(BufferUnderrunException.class, () -> endianUtils.readLongLE(inputStream));
+    }
+
+    @Test
+    public void testReadLongLEWithTwoByteInput() throws IOException {
+        // Arrange
+        int[] expectedBytes = { 0x01, 0x23 };
+        when(inputStream.read()).thenReturn(expectedBytes);
+        // Act
+        assertThrows(BufferUnderrunException.class, () -> endianUtils.readLongLE(inputStream));
+    }
+
+    @Test
+    public void testReadLongLEWithThreeByteInput() throws IOException {
+        // Arrange
+        int[] expectedBytes = { 0x01, 0x23, 0x45 };
+        when(inputStream.read()).thenReturn(expectedBytes);
+        // Act
+        assertThrows(BufferUnderrunException.class, () -> endianUtils.readLongLE(inputStream));
+    }
+
+    @Test
+    public void testReadLongLEWithFourByteInput() throws IOException {
+        // Arrange
+        int[] expectedBytes = { 0x01, 0x23, 0x45, 0x67 };
+        when(inputStream.read()).thenReturn(expectedBytes);
+        // Act
+        assertThrows(BufferUnderrunException.class, () -> endianUtils.readLongLE(inputStream));
+    }
+
+    @Test
+    public void testReadLongLEWithFiveByteInput() throws IOException {
+        // Arrange
+        int[] expectedBytes = { 0x01, 0x23, 0x45, 0x67, 0x89 };
+        when(inputStream.read()).thenReturn(expectedBytes);
+        // Act
+        assertThrows(BufferUnderrunException.class, () -> endianUtils.readLongLE(inputStream));
+    }
+
+    @Test
+    public void testReadLongLEWithSixByteInput() throws IOException {
+        // Arrange
+        int[] expectedBytes = { 0x01, 0x23, 0x45, 0x67, 0x89, 0xAB };
+        when(inputStream.read()).thenReturn(expectedBytes);
+        // Act
+    }
+}
+
+--------------------------------------------
+Error in EndianUtils_readLongLE_9_2_Test: line 6 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: package org.apache.tika.exception

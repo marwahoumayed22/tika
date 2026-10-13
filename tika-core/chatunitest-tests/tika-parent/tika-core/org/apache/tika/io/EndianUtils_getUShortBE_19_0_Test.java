@@ -1,0 +1,109 @@
+package org.apache.tika.io;
+
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.*;
+import org.junit.jupiter.api.*;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+import java.io.IOException;
+import java.io.InputStream;
+import org.apache.tika.exception.TikaException;
+
+@ExtendWith(MockitoExtension.class)
+public class EndianUtils_getUShortBE_19_0_Test {
+
+    private EndianUtils endianUtils;
+
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+        endianUtils = new EndianUtils();
+    }
+
+    @Test
+    public void testGetUShortBEWithValidInput() throws IOException {
+        byte[] data = { 0x12, 0x34 };
+        int offset = 0;
+        int expected = 0x1234;
+        int result = endianUtils.getUShortBE(data, offset);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testGetUShortBEWithNegativeOffset() {
+        byte[] data = { 0x12, 0x34 };
+        int offset = -1;
+        assertThrows(IndexOutOfBoundsException.class, () -> endianUtils.getUShortBE(data, offset));
+    }
+
+    @Test
+    public void testGetUShortBEWithOffsetOutOfBounds() {
+        byte[] data = { 0x12, 0x34 };
+        int offset = 2;
+        assertThrows(IndexOutOfBoundsException.class, () -> endianUtils.getUShortBE(data, offset));
+    }
+
+    @Test
+    public void testGetUShortBEWithEmptyArray() {
+        byte[] data = {};
+        int offset = 0;
+        assertThrows(IndexOutOfBoundsException.class, () -> endianUtils.getUShortBE(data, offset));
+    }
+
+    @Test
+    public void testGetUShortBEWithSingleByteArray() {
+        byte[] data = { 0x12 };
+        int offset = 0;
+        assertThrows(IndexOutOfBoundsException.class, () -> endianUtils.getUShortBE(data, offset));
+    }
+
+    @Test
+    public void testGetUShortBEWithSingleByteArrayWithOffset() {
+        byte[] data = { 0x12 };
+        int offset = 1;
+        assertThrows(IndexOutOfBoundsException.class, () -> endianUtils.getUShortBE(data, offset));
+    }
+
+    @Test
+    public void testGetUShortBEWithSingleByteArrayWithNegativeOffset() {
+        byte[] data = { 0x12 };
+        int offset = -1;
+        assertThrows(IndexOutOfBoundsException.class, () -> endianUtils.getUShortBE(data, offset));
+    }
+
+    @Test
+    public void testGetUShortBEWithSingleByteArrayWithOffsetOutOfBounds() {
+        byte[] data = { 0x12 };
+        int offset = 1;
+        assertThrows(IndexOutOfBoundsException.class, () -> endianUtils.getUShortBE(data, offset));
+    }
+
+    @Test
+    public void testGetUShortBEWithSingleByteArrayWithOffsetOutOfBoundsNegative() {
+        byte[] data = { 0x12 };
+        int offset = -2;
+        assertThrows(IndexOutOfBoundsException.class, () -> endianUtils.getUShortBE(data, offset));
+    }
+
+    @Test
+    public void testGetUShortBEWithSingleByteArrayWithOffsetOutOfBoundsPositive() {
+        byte[] data = { 0x12 };
+        int offset = 2;
+        assertThrows(IndexOutOfBoundsException.class, () -> endianUtils.getUShortBE(data, offset));
+    }
+
+    @Test
+    public void testGetUShortBEWithSingleByteArrayWithOffsetOutOfBoundsNegativeAndPositive() {
+        byte[] data = { 0x12 };
+        int offset = -1;
+        assertThrows(IndexOutOfBoundsException.class, () -> endianUtils.getUShortBE(data, offset));
+    }
+
+    @Test
+    public void testGetUShortBEWithSingleByteArrayWithOffsetOutOfBoundsNegativeAndPositiveAndNegative() {
+        byte[] data = { 0x12 };
+        int offset = -2;
+        assertThrows(IndexOutOfBoundsException.class, () -> endianUtils.getUShortBE(data, offset));
+    }
+}

@@ -1,0 +1,116 @@
+package org.apache.tika.io;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import org.apache.tika.io.EndianUtils;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import java.io.InputStream;
+import org.apache.tika.exception.TikaException;
+import org.mockito.*;
+import org.junit.jupiter.api.*;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+@ExtendWith(MockitoExtension.class)
+public class EndianUtils_readUE7_11_1_Test {
+
+    private EndianUtils endianUtils;
+
+    @BeforeEach
+    public void setUp() {
+        endianUtils = new EndianUtils();
+    }
+
+    @Test
+    public void testReadUE7SingleByte() throws IOException {
+        // Arrange
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(new byte[] { 0x01 });
+        long expected = 1;
+        // Act
+        long result = endianUtils.readUE7(inputStream);
+        // Assert
+        assertEquals(expected, result);
+        verify(inputStream).read();
+    }
+
+    @Test
+    public void testReadUE7MultipleBytes() throws IOException {
+        // Arrange
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(new byte[] { 0x01, 0x02, 0x03 });
+        long expected = 129;
+        // Act
+        long result = endianUtils.readUE7(inputStream);
+        // Assert
+        assertEquals(expected, result);
+        verify(inputStream).read();
+        verify(inputStream).read();
+        verify(inputStream).read();
+    }
+
+    @Test
+    public void testReadUE7MaxBytes() throws IOException {
+        // Arrange
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 });
+        long expected = 16383;
+        // Act
+        long result = endianUtils.readUE7(inputStream);
+        // Assert
+        assertEquals(expected, result);
+        verify(inputStream).read();
+        verify(inputStream).read();
+        verify(inputStream).read();
+        verify(inputStream).read();
+        verify(inputStream).read();
+        verify(inputStream).read();
+        verify(inputStream).read();
+    }
+
+    @Test
+    public void testReadUE7Underun() throws IOException {
+        // Arrange
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(new byte[] { 0x01, 0x02, 0x03 });
+        when(inputStream.read()).thenReturn(-1);
+        // Act
+        assertThrows(IOException.class, () -> endianUtils.readUE7(inputStream));
+        // Assert
+        verify(inputStream).read();
+        verify(inputStream).read();
+        verify(inputStream).read();
+    }
+
+    @Test
+    public void testReadUE7MaxBytesWithOverflow() throws IOException {
+        // Arrange
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 });
+        long expected = 16384;
+        // Act
+        long result = endianUtils.readUE7(inputStream);
+        // Assert
+        assertEquals(expected, result);
+        verify(inputStream).read();
+        verify(inputStream).read();
+        verify(inputStream).read();
+        verify(inputStream).read();
+        verify(inputStream).read();
+        verify(inputStream).read();
+        verify(inputStream).read();
+        verify(inputStream).read();
+    }
+}
+
+--------------------------------------------
+Error in testReadUE7MaxBytesWithOverflow(): line 90 : org.opentest4j.AssertionFailedError: expected: <16384> but was: <1>
+Error in testReadUE7SingleByte(): line 34 : java.lang.IllegalStateException: Could not initialize plugin: interface org.mockito.plugins.MockMaker (alternate: null)
+Error in testReadUE7MultipleBytes(): line 45 : org.opentest4j.AssertionFailedError: expected: <129> but was: <1>
+Error in testReadUE7MaxBytes(): line 59 : org.opentest4j.AssertionFailedError: expected: <16383> but was: <1>
+Error in testReadUE7Underun(): line 73 : org.mockito.exceptions.misusing.MissingMethodInvocationException: 
+when() requires an argument which has to be 'a method call on a mock'.
+For example:
+    when(mock.getArticles()).thenReturn(articles);
+
+Also, this error might show up because:
+1. you stub either of: final/private/native/equals()/hashCode() methods.
+   Those methods *cannot* be stubbed/verified.
+   Mocking methods declared on non-public parent classes is not supported.
+2. inside when() you don't call method on mock but on some other object.

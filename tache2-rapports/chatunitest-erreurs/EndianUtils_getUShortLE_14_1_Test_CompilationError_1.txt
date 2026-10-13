@@ -1,0 +1,124 @@
+package org.apache.tika.io;
+
+import static org.junit.jupiter.params.ParameterizedTest;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
+import static org.junit.jupiter.params.provider.MethodSource.methodSource;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.stream.Stream;
+import org.apache.tika.io.EndianUtils;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import java.io.InputStream;
+import org.apache.tika.exception.TikaException;
+import org.mockito.*;
+import org.junit.jupiter.api.*;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+@ExtendWith(MockitoExtension.class)
+public class EndianUtils_getUShortLE_14_1_Test {
+
+    private EndianUtils endianUtils;
+
+    @BeforeEach
+    public void setUp() {
+        endianUtils = new EndianUtils();
+    }
+
+    @Test
+    public void testGetUShortLEWithValidData() throws IOException {
+        byte[] data = { 0x01, 0x02 };
+        int result = endianUtils.getUShortLE(data);
+        assertEquals(258, result);
+    }
+
+    @Test
+    public void testGetUShortLEWithNegativeData() throws IOException {
+        byte[] data = { -128, 127 };
+        int result = endianUtils.getUShortLE(data);
+        assertEquals(255, result);
+    }
+
+    @Test
+    public void testGetUShortLEWithZeroData() throws IOException {
+        byte[] data = { 0, 0 };
+        int result = endianUtils.getUShortLE(data);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testGetUShortLEWithSingleByteData() throws IOException {
+        byte[] data = { 0x01 };
+        assertThrows(IllegalArgumentException.class, () -> endianUtils.getUShortLE(data));
+    }
+
+    @Test
+    public void testGetUShortLEWithOffset() throws IOException {
+        byte[] data = { 0x01, 0x02, 0x03, 0x04 };
+        int result = endianUtils.getUShortLE(data, 1);
+        assertEquals(258, result);
+    }
+
+    @Test
+    public void testGetUShortLEWithOffsetOutOfBounds() throws IOException {
+        byte[] data = { 0x01, 0x02 };
+        assertThrows(IndexOutOfBoundsException.class, () -> endianUtils.getUShortLE(data, 2));
+    }
+
+    @Test
+    public void testGetUShortLEWithOffsetNegative() throws IOException {
+        byte[] data = { 0x01, 0x02 };
+        assertThrows(IndexOutOfBoundsException.class, () -> endianUtils.getUShortLE(data, -1));
+    }
+
+    @Test
+    public void testGetUShortLEWithOffsetZero() throws IOException {
+        byte[] data = { 0x01, 0x02 };
+        int result = endianUtils.getUShortLE(data, 0);
+        assertEquals(258, result);
+    }
+
+    @Test
+    public void testGetUShortLEWithOffsetOne() throws IOException {
+        byte[] data = { 0x01, 0x02 };
+        int result = endianUtils.getUShortLE(data, 1);
+        assertEquals(258, result);
+    }
+
+    @Test
+    public void testGetUShortLEWithOffsetTwo() throws IOException {
+        byte[] data = { 0x01, 0x02 };
+        int result = endianUtils.getUShortLE(data, 2);
+        assertEquals(258, result);
+    }
+
+    @Test
+    public void testGetUShortLEWithOffsetThree() throws IOException {
+        byte[] data = { 0x01, 0x02 };
+        int result = endianUtils.getUShortLE(data, 3);
+        assertEquals(258, result);
+    }
+
+    @Test
+    public void testGetUShortLEWithOffsetFour() throws IOException {
+        byte[] data = { 0x01, 0x02 };
+        int result = endianUtils.getUShortLE(data, 4);
+        assertEquals(258, result);
+    }
+
+    @Test
+    public void testGetUShortLEWithOffsetFive() throws IOException {
+        byte[] data = { 0x01, 0x02 };
+        int result = endianUtils.getUShortLE(data, 5);
+        assertEquals(258, result);
+    }
+}
+
+--------------------------------------------
+Error in EndianUtils_getUShortLE_14_1_Test: line 3 : package org.junit.jupiter does not exist
+Error in EndianUtils_getUShortLE_14_1_Test: line 3 : static import only from classes and interfaces
+Error in EndianUtils_getUShortLE_14_1_Test: line 5 : cannot find symbol
+  symbol:   static methodSource
+  location: class org.junit.jupiter.params.provider.MethodSource

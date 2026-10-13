@@ -1,0 +1,92 @@
+package org.apache.tika.io;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import org.apache.tika.exception.BufferUnderrunException;
+import org.apache.tika.exception.TikaException;
+import org.mockito.*;
+import org.junit.jupiter.api.*;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+public class EndianUtils_readUShortBE_3_0_Test {
+
+    private EndianUtils endianUtils;
+
+    private InputStream inputStream;
+
+    @BeforeEach
+    public void setUp() {
+        endianUtils = new EndianUtils();
+        inputStream = mock(InputStream.class);
+    }
+
+    @Test
+    public void testReadUShortBE_NormalOperation() throws IOException, BufferUnderrunException {
+        // Mock the input stream to return specific byte values
+        when(inputStream.read()).thenReturn(0x12, 0x34);
+        // Call the method
+        int result = endianUtils.readUShortBE(inputStream);
+        // Verify the result
+        assertEquals(0x1234, result);
+        // Verify that the input stream was read correctly
+        verify(inputStream).read();
+        verify(inputStream).read();
+    }
+
+    @Test
+    public void testReadUShortBE_BufferUnderrun() throws IOException, BufferUnderrunException {
+        // Mock the input stream to return a single byte
+        when(inputStream.read()).thenReturn(0x12);
+        // Call the method and expect a BufferUnderrunException
+        assertThrows(BufferUnderrunException.class, () -> {
+            endianUtils.readUShortBE(inputStream);
+        });
+        // Verify that the input stream was read correctly
+        verify(inputStream).read();
+    }
+
+    @Test
+    public void testReadUShortBE_IOException() throws IOException, BufferUnderrunException {
+        // Mock the input stream to throw an IOException
+        when(inputStream.read()).thenThrow(new IOException("Test IOException"));
+        // Call the method and expect an IOException
+        assertThrows(IOException.class, () -> {
+            endianUtils.readUShortBE(inputStream);
+        });
+        // Verify that the input stream was read correctly
+        verify(inputStream).read();
+    }
+
+    @Test
+    public void testReadUShortBE_TikaException() throws IOException, BufferUnderrunException {
+        // Mock the input stream to throw a TikaException
+        when(inputStream.read()).thenThrow(new TikaException("Test TikaException"));
+        // Call the method and expect a TikaException
+        assertThrows(TikaException.class, () -> {
+            endianUtils.readUShortBE(inputStream);
+        });
+        // Verify that the input stream was read correctly
+        verify(inputStream).read();
+    }
+}
+
+--------------------------------------------
+Error in EndianUtils_readUShortBE_3_0_Test: line 6 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: package org.apache.tika.exception
+Error in EndianUtils_readUShortBE_3_0_Test: line 28 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: class org.apache.tika.io.EndianUtils_readUShortBE_3_0_Test
+Error in EndianUtils_readUShortBE_3_0_Test: line 41 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: class org.apache.tika.io.EndianUtils_readUShortBE_3_0_Test
+Error in EndianUtils_readUShortBE_3_0_Test: line 53 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: class org.apache.tika.io.EndianUtils_readUShortBE_3_0_Test
+Error in EndianUtils_readUShortBE_3_0_Test: line 65 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: class org.apache.tika.io.EndianUtils_readUShortBE_3_0_Test

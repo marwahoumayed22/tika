@@ -1,0 +1,56 @@
+package org.apache.tika.io;
+
+import org.apache.tika.io.EndianUtils;
+import org.apache.tika.exception.BufferUnderrunException;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import org.mockito.*;
+import org.junit.jupiter.api.*;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+import java.io.InputStream;
+import org.apache.tika.exception.TikaException;
+
+@ExtendWith(MockitoExtension.class)
+public class EndianUtils_readUShortBE_3_2_Test {
+
+    @Mock
+    private InputStream inputStream;
+
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    public void testReadUShortBE_Normal() throws IOException {
+        when(inputStream.read()).thenReturn(0x12, 0x34);
+        int result = EndianUtils.readUShortBE(inputStream);
+        assertEquals(0x1234, result);
+    }
+
+    @Test
+    public void testReadUShortBE_BufferUnderrun() throws IOException {
+        when(inputStream.read()).thenReturn(0x12);
+        assertThrows(BufferUnderrunException.class, () -> EndianUtils.readUShortBE(inputStream));
+    }
+
+    @Test
+    public void testReadUShortBE_NegativeValue() throws IOException {
+        when(inputStream.read()).thenReturn(0x12, 0xFF);
+        assertThrows(BufferUnderrunException.class, () -> EndianUtils.readUShortBE(inputStream));
+    }
+
+    @Test
+    public void testReadUShortBE_InvalidInput() throws IOException {
+        when(inputStream.read()).thenReturn(-1);
+        assertThrows(BufferUnderrunException.class, () -> EndianUtils.readUShortBE(inputStream));
+    }
+}
+
+--------------------------------------------
+Error in EndianUtils_readUShortBE_3_2_Test: line 4 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: package org.apache.tika.exception

@@ -1,0 +1,101 @@
+package org.apache.tika.io;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import org.apache.tika.exception.TikaException;
+import org.apache.tika.io.EndianUtils;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.*;
+import org.junit.jupiter.api.*;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+public class EndianUtils_getUByte_30_1_Test {
+
+    private EndianUtils endianUtils;
+
+    @BeforeEach
+    public void setUp() {
+        endianUtils = new EndianUtils();
+    }
+
+    @Test
+    public void testGetUByteWithValidInput() throws IOException, TikaException {
+        byte[] data = { 0x01, 0x02, 0x03, 0x04 };
+        int offset = 0;
+        short expected = 0x01;
+        short result = endianUtils.getUByte(data, offset);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testGetUByteWithNegativeOffset() {
+        byte[] data = { 0x01, 0x02, 0x03, 0x04 };
+        int offset = -1;
+        assertThrows(IndexOutOfBoundsException.class, () -> endianUtils.getUByte(data, offset));
+    }
+
+    @Test
+    public void testGetUByteWithOffsetPastArrayBounds() {
+        byte[] data = { 0x01, 0x02, 0x03, 0x04 };
+        int offset = 4;
+        assertThrows(IndexOutOfBoundsException.class, () -> endianUtils.getUByte(data, offset));
+    }
+
+    @Test
+    public void testGetUByteWithNullData() {
+        byte[] data = null;
+        int offset = 0;
+        assertThrows(NullPointerException.class, () -> endianUtils.getUByte(data, offset));
+    }
+
+    @Test
+    public void testGetUByteWithOffsetOutOfRange() {
+        byte[] data = { 0x01, 0x02, 0x03, 0x04 };
+        int offset = 5;
+        assertThrows(IndexOutOfBoundsException.class, () -> endianUtils.getUByte(data, offset));
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 0, 1, 2, 3 })
+    public void testGetUByteWithDifferentOffsets(int offset) {
+        byte[] data = { 0x01, 0x02, 0x03, 0x04 };
+        short expected = (short) (data[offset] & 0xFF);
+        short result = endianUtils.getUByte(data, offset);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testGetUByteWithLargeOffset() throws IOException, TikaException {
+        byte[] data = { 0x01, 0x02, 0x03, 0x04 };
+        int offset = 10;
+        short expected = 0x00;
+        short result = endianUtils.getUByte(data, offset);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testGetUByteWithNegativeData() throws IOException, TikaException {
+        byte[] data = { -1, 0x02, 0x03, 0x04 };
+        int offset = 0;
+        short expected = 0xFF;
+        short result = endianUtils.getUByte(data, offset);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testGetUByteWithLargeData() throws IOException, TikaException {
+        byte[] data = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
+        int offset = 0;
+        short expected = 0x01;
+        short result = endianUtils.getUByte(data, offset);
+        assertEquals(expected, result);
+    }
+}
+
+--------------------------------------------
+Error in testGetUByteWithLargeOffset(): line 77 : java.lang.ArrayIndexOutOfBoundsException: Index 10 out of bounds for length 4

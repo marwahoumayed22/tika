@@ -1,0 +1,114 @@
+package org.apache.tika.io;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import org.apache.tika.exception.TikaException;
+import org.apache.tika.io.EndianUtils;
+import org.mockito.*;
+import org.junit.jupiter.api.*;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+public class EndianUtils_getUIntBE_26_2_Test {
+
+    private EndianUtils endianUtils;
+
+    @BeforeEach
+    public void setUp() {
+        endianUtils = new EndianUtils();
+    }
+
+    @Test
+    public void testGetUIntBENormalCase() throws IOException {
+        byte[] data = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
+        long expected = 0x0102030405060708L;
+        long result = endianUtils.getUIntBE(data);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testGetUIntBEEdgeCaseSingleByte() throws IOException {
+        byte[] data = { 0x01 };
+        long expected = 0x0100000000000000L;
+        long result = endianUtils.getUIntBE(data);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testGetUIntBEEdgeCaseEmptyArray() throws IOException {
+        byte[] data = {};
+        long expected = 0x0000000000000000L;
+        long result = endianUtils.getUIntBE(data);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testGetUIntBEEdgeCaseNegativeByte() throws IOException {
+        byte[] data = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
+        long expected = 0xFFFFFFFFFFFFFFFFL;
+        long result = endianUtils.getUIntBE(data);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testGetUIntBEEdgeCaseSingleByteNegative() throws IOException {
+        byte[] data = { 0xFF };
+        long expected = 0xFFFFFFFF00000000L;
+        long result = endianUtils.getUIntBE(data);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testGetUIntBEEdgeCaseSingleByteZero() throws IOException {
+        byte[] data = { 0x00 };
+        long expected = 0x0000000000000000L;
+        long result = endianUtils.getUIntBE(data);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testGetUIntBEEdgeCaseSingleBytePositive() throws IOException {
+        byte[] data = { 0x01 };
+        long expected = 0x0100000000000000L;
+        long result = endianUtils.getUIntBE(data);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testGetUIntBEEdgeCaseSingleBytePositiveWithOffset() throws IOException {
+        byte[] data = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
+        long expected = 0x0102030405060708L;
+        long result = endianUtils.getUIntBE(data, 0);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testGetUIntBEEdgeCaseSingleByteNegativeWithOffset() throws IOException {
+        byte[] data = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
+        long expected = 0xFFFFFFFFFFFFFFFFL;
+        long result = endianUtils.getUIntBE(data, 0);
+        assertEquals(expected, result);
+    }
+}
+
+--------------------------------------------
+Error in EndianUtils_getUIntBE_26_2_Test: line 50 : incompatible types: possible lossy conversion from int to byte
+Error in EndianUtils_getUIntBE_26_2_Test: line 50 : incompatible types: possible lossy conversion from int to byte
+Error in EndianUtils_getUIntBE_26_2_Test: line 50 : incompatible types: possible lossy conversion from int to byte
+Error in EndianUtils_getUIntBE_26_2_Test: line 50 : incompatible types: possible lossy conversion from int to byte
+Error in EndianUtils_getUIntBE_26_2_Test: line 50 : incompatible types: possible lossy conversion from int to byte
+Error in EndianUtils_getUIntBE_26_2_Test: line 50 : incompatible types: possible lossy conversion from int to byte
+Error in EndianUtils_getUIntBE_26_2_Test: line 50 : incompatible types: possible lossy conversion from int to byte
+Error in EndianUtils_getUIntBE_26_2_Test: line 50 : incompatible types: possible lossy conversion from int to byte
+Error in EndianUtils_getUIntBE_26_2_Test: line 58 : incompatible types: possible lossy conversion from int to byte
+Error in EndianUtils_getUIntBE_26_2_Test: line 90 : incompatible types: possible lossy conversion from int to byte
+Error in EndianUtils_getUIntBE_26_2_Test: line 90 : incompatible types: possible lossy conversion from int to byte
+Error in EndianUtils_getUIntBE_26_2_Test: line 90 : incompatible types: possible lossy conversion from int to byte
+Error in EndianUtils_getUIntBE_26_2_Test: line 90 : incompatible types: possible lossy conversion from int to byte
+Error in EndianUtils_getUIntBE_26_2_Test: line 90 : incompatible types: possible lossy conversion from int to byte
+Error in EndianUtils_getUIntBE_26_2_Test: line 90 : incompatible types: possible lossy conversion from int to byte
+Error in EndianUtils_getUIntBE_26_2_Test: line 90 : incompatible types: possible lossy conversion from int to byte
+Error in EndianUtils_getUIntBE_26_2_Test: line 90 : incompatible types: possible lossy conversion from int to byte

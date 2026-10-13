@@ -1,0 +1,115 @@
+package org.apache.tika.io;
+
+import static org.junit.jupiter.api.extension.ExtendWith;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import org.apache.tika.exception.TikaException;
+import org.apache.tika.io.EndianUtils;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.*;
+import org.junit.jupiter.api.*;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+@ExtendWith(MockitoExtension.class)
+public class EndianUtils_getUByte_30_0_Test {
+
+    @InjectMocks
+    private EndianUtils endianUtils;
+
+    @Mock
+    private InputStream inputStream;
+
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    public void testGetUByte() throws IOException {
+        // Test with a valid byte array and offset
+        byte[] data = { 0x12, 0x34 };
+        int offset = 0;
+        short expected = 0x12;
+        assertEquals(expected, endianUtils.getUByte(data, offset));
+        // Test with a valid byte array and offset that exceeds the array length
+        offset = 1;
+        expected = 0x34;
+        assertEquals(expected, endianUtils.getUByte(data, offset));
+        // Test with a valid byte array and offset that is out of bounds
+        offset = 2;
+        expected = 0x00;
+        assertEquals(expected, endianUtils.getUByte(data, offset));
+        // Test with a valid byte array and offset that is negative
+        offset = -1;
+        expected = 0x00;
+        assertEquals(expected, endianUtils.getUByte(data, offset));
+        // Test with a null byte array
+        byte[] nullData = null;
+        offset = 0;
+        expected = 0x00;
+        assertEquals(expected, endianUtils.getUByte(nullData, offset));
+        // Test with a byte array that is too short
+        byte[] shortData = { 0x12 };
+        offset = 0;
+        expected = 0x12;
+        assertEquals(expected, endianUtils.getUByte(shortData, offset));
+        // Test with a byte array that is too short and offset is out of bounds
+        offset = 1;
+        expected = 0x00;
+        assertEquals(expected, endianUtils.getUByte(shortData, offset));
+    }
+
+    @Test
+    public void testGetUByteWithNegativeOffset() throws IOException {
+        // Test with a valid byte array and negative offset
+        byte[] data = { 0x12, 0x34 };
+        int offset = -1;
+        short expected = 0x12;
+        assertEquals(expected, endianUtils.getUByte(data, offset));
+    }
+
+    @Test
+    public void testGetUByteWithNegativeOffsetAndShortData() throws IOException {
+        // Test with a byte array that is too short and negative offset
+        byte[] shortData = { 0x12 };
+        int offset = -1;
+        short expected = 0x12;
+        assertEquals(expected, endianUtils.getUByte(shortData, offset));
+    }
+
+    @Test
+    public void testGetUByteWithNegativeOffsetAndNullData() throws IOException {
+        // Test with a null byte array and negative offset
+        byte[] nullData = null;
+        int offset = -1;
+        short expected = 0x00;
+        assertEquals(expected, endianUtils.getUByte(nullData, offset));
+    }
+
+    @Test
+    public void testGetUByteWithNegativeOffsetAndShortDataAndNullData() throws IOException {
+        // Test with a null byte array and negative offset and short data
+        byte[] shortData = { 0x12 };
+        int offset = -1;
+        short expected = 0x12;
+        assertEquals(expected, endianUtils.getUByte(shortData, offset));
+    }
+
+    @Test
+    public void testGetUByteWithNegativeOffsetAndShortDataAndNullDataAndOffsetOutOfBounds() throws IOException {
+        // Test with a null byte array, short data, negative offset, and offset out of bounds
+        byte[] shortData = { 0x12 };
+        int offset = -1;
+        short expected = 0x12;
+        assertEquals(expected, endianUtils.getUByte(shortData, offset));
+    }
+}
+
+--------------------------------------------
+Error in EndianUtils_getUByte_30_0_Test: line 3 : cannot find symbol
+  symbol:   class extension
+  location: package org.junit.jupiter.api
+Error in EndianUtils_getUByte_30_0_Test: line 3 : static import only from classes and interfaces

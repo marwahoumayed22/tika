@@ -1,0 +1,73 @@
+package org.apache.tika.io;
+
+import org.apache.tika.io.EndianUtils;
+import org.apache.tika.exception.BufferUnderrunException;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import org.mockito.*;
+import org.junit.jupiter.api.*;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import java.io.InputStream;
+import org.apache.tika.exception.TikaException;
+
+public class EndianUtils_readUIntLE_4_2_Test {
+
+    private EndianUtils endianUtils;
+
+    @BeforeEach
+    public void setUp() {
+        endianUtils = new EndianUtils();
+    }
+
+    @Test
+    public void testReadUIntLENormalOperation() throws IOException {
+        // Create a byte array with a 4-byte unsigned little-endian integer
+        byte[] data = { 0x01, 0x02, 0x03, 0x04 };
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
+        // Call the method and assert the result
+        long result = endianUtils.readUIntLE(inputStream);
+        assertEquals(0x04030201L, result);
+    }
+
+    @Test
+    public void testReadUIntLENegativeValue() throws IOException {
+        // Create a byte array with a 4-byte unsigned little-endian integer that overflows
+        byte[] data = { 0xFF, 0xFF, 0xFF, 0xFF };
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
+        // Call the method and assert the result
+        long result = endianUtils.readUIntLE(inputStream);
+        assertEquals(0xFFFFFFFFL, result);
+    }
+
+    @Test
+    public void testReadUIntLEBufferUnderrun() throws IOException {
+        // Create a byte array with less than 4 bytes
+        byte[] data = { 0x01, 0x02 };
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
+        // Call the method and assert the exception
+        assertThrows(BufferUnderrunException.class, () -> {
+            endianUtils.readUIntLE(inputStream);
+        });
+    }
+
+    @ParameterizedTest
+    @CsvSource({ "0x01, 0x02, 0x03, 0x04, 0x04030201", "0xFF, 0xFF, 0xFF, 0xFF, 0xFFFFFFFF", "0x00, 0x00, 0x00, 0x00, 0x00000000", "0x01, 0x00, 0x00, 0x00, 0x00000001", "0x00, 0x01, 0x00, 0x00, 0x00000002", "0x00, 0x00, 0x01, 0x00, 0x00000003", "0x00, 0x00, 0x00, 0x01, 0x00000004" })
+    public void testReadUIntLEMultipleValues(int ch1, int ch2, int ch3, int ch4, long expected) throws IOException {
+        // Create a byte array with a 4-byte unsigned little-endian integer
+        byte[] data = { ch1, ch2, ch3, ch4 };
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
+        // Call the method and assert the result
+        long result = endianUtils.readUIntLE(inputStream);
+        assertEquals(expected, result);
+    }
+}
+
+--------------------------------------------
+Error in EndianUtils_readUIntLE_4_2_Test: line 4 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: package org.apache.tika.exception

@@ -1,0 +1,80 @@
+package org.apache.tika.io;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import org.apache.tika.exception.BufferUnderrunException;
+import org.apache.tika.exception.TikaException;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.*;
+import org.junit.jupiter.api.*;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+@ExtendWith(MockitoExtension.class)
+public class EndianUtils_readIntBE_7_1_Test {
+
+    @Mock
+    private InputStream mockInputStream;
+
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    public void testReadIntBE_NormalOperation() throws IOException, BufferUnderrunException {
+        // Arrange
+        int[] expectedValues = { 0x12345678, 0x87654321, 0x00000000, 0xFFFFFFFF };
+        when(mockInputStream.read()).thenReturn(expectedValues);
+        // Act
+        int result = EndianUtils.readIntBE(mockInputStream);
+        // Assert
+        assertEquals(expectedValues[0], result);
+        assertEquals(expectedValues[1], mockInputStream.read());
+        assertEquals(expectedValues[2], mockInputStream.read());
+        assertEquals(expectedValues[3], mockInputStream.read());
+    }
+
+    @Test
+    public void testReadIntBE_BufferUnderrun() throws IOException, BufferUnderrunException {
+        // Arrange
+        when(mockInputStream.read()).thenReturn(-1);
+        // Act
+        assertThrows(BufferUnderrunException.class, () -> EndianUtils.readIntBE(mockInputStream));
+    }
+
+    @Test
+    public void testReadIntBE_IOException() throws IOException, BufferUnderrunException {
+        // Arrange
+        when(mockInputStream.read()).thenThrow(new IOException());
+        // Act
+        assertThrows(IOException.class, () -> EndianUtils.readIntBE(mockInputStream));
+    }
+
+    @Test
+    public void testReadIntBE_TikaException() throws IOException, BufferUnderrunException {
+        // Arrange
+        when(mockInputStream.read()).thenThrow(new TikaException());
+        // Act
+        assertThrows(TikaException.class, () -> EndianUtils.readIntBE(mockInputStream));
+    }
+}
+
+--------------------------------------------
+Error in EndianUtils_readIntBE_7_1_Test: line 6 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: package org.apache.tika.exception
+Error in EndianUtils_readIntBE_7_1_Test: line 27 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: class org.apache.tika.io.EndianUtils_readIntBE_7_1_Test
+Error in EndianUtils_readIntBE_7_1_Test: line 41 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: class org.apache.tika.io.EndianUtils_readIntBE_7_1_Test
+Error in EndianUtils_readIntBE_7_1_Test: line 49 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: class org.apache.tika.io.EndianUtils_readIntBE_7_1_Test
+Error in EndianUtils_readIntBE_7_1_Test: line 57 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: class org.apache.tika.io.EndianUtils_readIntBE_7_1_Test

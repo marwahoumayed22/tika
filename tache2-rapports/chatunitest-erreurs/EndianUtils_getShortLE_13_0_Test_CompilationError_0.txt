@@ -1,0 +1,118 @@
+package org.apache.tika.io;
+
+import static org.junit.jupiter.api.extension.ExtendWith;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.concurrent.TimeUnit;
+import org.apache.tika.io.EndianUtils;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.*;
+import org.junit.jupiter.api.*;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+import java.io.InputStream;
+import org.apache.tika.exception.TikaException;
+
+@ExtendWith(MockitoExtension.class)
+public class EndianUtils_getShortLE_13_0_Test {
+
+    private EndianUtils endianUtils;
+
+    private Method getUShortLEMethod;
+
+    @BeforeEach
+    public void setUp() throws Exception {
+        endianUtils = new EndianUtils();
+        getUShortLEMethod = EndianUtils.class.getDeclaredMethod("getUShortLE", byte[].class, int.class);
+        getUShortLEMethod.setAccessible(true);
+    }
+
+    @Test
+    public void testGetShortLEWithValidInput() throws Exception {
+        byte[] data = { 0x01, 0x02 };
+        int offset = 0;
+        short expected = 0x0201;
+        short result = (short) getUShortLEMethod.invoke(endianUtils, data, offset);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testGetShortLEWithNegativeOffset() {
+        byte[] data = { 0x01, 0x02 };
+        int offset = -1;
+        assertThrows(IndexOutOfBoundsException.class, () -> {
+            getUShortLEMethod.invoke(endianUtils, data, offset);
+        });
+    }
+
+    @Test
+    public void testGetShortLEWithOffsetOutOfBounds() {
+        byte[] data = { 0x01, 0x02 };
+        int offset = 2;
+        assertThrows(IndexOutOfBoundsException.class, () -> {
+            getUShortLEMethod.invoke(endianUtils, data, offset);
+        });
+    }
+
+    @Test
+    public void testGetShortLEWithNullData() {
+        byte[] data = null;
+        int offset = 0;
+        assertThrows(NullPointerException.class, () -> {
+            getUShortLEMethod.invoke(endianUtils, data, offset);
+        });
+    }
+
+    @Test
+    public void testGetShortLEWithEmptyData() {
+        byte[] data = {};
+        int offset = 0;
+        assertThrows(IndexOutOfBoundsException.class, () -> {
+            getUShortLEMethod.invoke(endianUtils, data, offset);
+        });
+    }
+
+    @Test
+    public void testGetShortLEWithSingleByteData() {
+        byte[] data = { 0x01 };
+        int offset = 0;
+        assertThrows(IndexOutOfBoundsException.class, () -> {
+            getUShortLEMethod.invoke(endianUtils, data, offset);
+        });
+    }
+
+    @Test
+    public void testGetShortLEWithTwoByteData() throws Exception {
+        byte[] data = { 0x01, 0x02 };
+        int offset = 0;
+        short expected = 0x0201;
+        short result = (short) getUShortLEMethod.invoke(endianUtils, data, offset);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testGetShortLEWithThreeByteData() throws Exception {
+        byte[] data = { 0x01, 0x02, 0x03 };
+        int offset = 0;
+        short expected = 0x0302;
+        short result = (short) getUShortLEMethod.invoke(endianUtils, data, offset);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testGetShortLEWithFourByteData() throws Exception {
+        byte[] data = { 0x01, 0x02, 0x03, 0x04 };
+        int offset = 0;
+        short expected = 0x0403;
+        short result = (short) getUShortLEMethod.invoke(endianUtils, data, offset);
+        assertEquals(expected, result);
+    }
+}
+
+--------------------------------------------
+Error in EndianUtils_getShortLE_13_0_Test: line 3 : cannot find symbol
+  symbol:   class extension
+  location: package org.junit.jupiter.api
+Error in EndianUtils_getShortLE_13_0_Test: line 3 : static import only from classes and interfaces

@@ -1,0 +1,110 @@
+package org.apache.tika.io;
+
+import static org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.*;
+import org.junit.jupiter.api.*;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+import java.io.IOException;
+import java.io.InputStream;
+import org.apache.tika.exception.TikaException;
+
+@ExtendWith(MockitoExtension.class)
+public class EndianUtils_getIntLE_21_2_Test {
+
+    private EndianUtils endianUtils;
+
+    @BeforeEach
+    public void setUp() {
+        endianUtils = new EndianUtils();
+    }
+
+    @Test
+    public void testGetIntLEWithValidInput() throws IOException {
+        byte[] data = { 0x01, 0x02, 0x03, 0x04 };
+        int offset = 0;
+        int expected = 0x04030201;
+        int result = endianUtils.getIntLE(data, offset);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testGetIntLEWithNegativeOffset() {
+        byte[] data = { 0x01, 0x02, 0x03, 0x04 };
+        int offset = -1;
+        assertThrows(IllegalArgumentException.class, () -> endianUtils.getIntLE(data, offset));
+    }
+
+    @Test
+    public void testGetIntLEWithOffsetOutOfBounds() {
+        byte[] data = { 0x01, 0x02, 0x03, 0x04 };
+        int offset = 4;
+        assertThrows(IllegalArgumentException.class, () -> endianUtils.getIntLE(data, offset));
+    }
+
+    @Test
+    public void testGetIntLEWithNullData() {
+        byte[] data = null;
+        int offset = 0;
+        assertThrows(NullPointerException.class, () -> endianUtils.getIntLE(data, offset));
+    }
+
+    @Test
+    public void testGetIntLEWithEmptyData() {
+        byte[] data = {};
+        int offset = 0;
+        assertThrows(IllegalArgumentException.class, () -> endianUtils.getIntLE(data, offset));
+    }
+
+    @Test
+    public void testGetIntLEWithSingleByteData() {
+        byte[] data = { 0x01 };
+        int offset = 0;
+        assertThrows(IllegalArgumentException.class, () -> endianUtils.getIntLE(data, offset));
+    }
+
+    @Test
+    public void testGetIntLEWithTwoByteData() {
+        byte[] data = { 0x01, 0x02 };
+        int offset = 0;
+        assertThrows(IllegalArgumentException.class, () -> endianUtils.getIntLE(data, offset));
+    }
+
+    @Test
+    public void testGetIntLEWithThreeByteData() {
+        byte[] data = { 0x01, 0x02, 0x03 };
+        int offset = 0;
+        assertThrows(IllegalArgumentException.class, () -> endianUtils.getIntLE(data, offset));
+    }
+
+    @Test
+    public void testGetIntLEWithFourByteData() {
+        byte[] data = { 0x01, 0x02, 0x03, 0x04 };
+        int offset = 0;
+        int expected = 0x04030201;
+        int result = endianUtils.getIntLE(data, offset);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testGetIntLEWithFiveByteData() {
+        byte[] data = { 0x01, 0x02, 0x03, 0x04, 0x05 };
+        int offset = 0;
+        assertThrows(IllegalArgumentException.class, () -> endianUtils.getIntLE(data, offset));
+    }
+
+    @Test
+    public void testGetIntLEWithSixByteData() {
+        byte[] data = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 };
+        int offset = 0;
+        assertThrows(IllegalArgumentException.class, () -> endianUtils.getIntLE(data, offset));
+    }
+}
+
+--------------------------------------------
+Error in EndianUtils_getIntLE_21_2_Test: line 3 : cannot find symbol
+  symbol:   class extension
+  location: package org.junit.jupiter.api
+Error in EndianUtils_getIntLE_21_2_Test: line 3 : static import only from classes and interfaces

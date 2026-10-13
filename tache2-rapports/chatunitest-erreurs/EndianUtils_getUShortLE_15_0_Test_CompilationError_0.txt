@@ -1,0 +1,128 @@
+package org.apache.tika.io;
+
+import static org.junit.jupiter.api.extension.ExtendWith;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import org.apache.tika.exception.TikaException;
+import org.apache.tika.io.EndianUtils;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.*;
+import org.junit.jupiter.api.*;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+@ExtendWith(MockitoExtension.class)
+public class EndianUtils_getUShortLE_15_0_Test {
+
+    private EndianUtils endianUtils;
+
+    @BeforeEach
+    public void setUp() {
+        endianUtils = new EndianUtils();
+    }
+
+    @Test
+    public void testGetUShortLEWithValidInput() throws IOException {
+        byte[] data = { 0x01, 0x02 };
+        int offset = 0;
+        int expected = 0x0201;
+        int result = endianUtils.getUShortLE(data, offset);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testGetUShortLEWithInvalidOffset() throws IOException {
+        byte[] data = { 0x01, 0x02 };
+        int offset = 1;
+        int expected = 0x0201;
+        int result = endianUtils.getUShortLE(data, offset);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testGetUShortLEWithNegativeOffset() throws IOException {
+        byte[] data = { 0x01, 0x02 };
+        int offset = -1;
+        int expected = 0x0201;
+        int result = endianUtils.getUShortLE(data, offset);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testGetUShortLEWithOffsetOutOfBounds() throws IOException {
+        byte[] data = { 0x01, 0x02 };
+        int offset = 2;
+        int expected = 0x0201;
+        int result = endianUtils.getUShortLE(data, offset);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testGetUShortLEWithNullData() throws IOException {
+        byte[] data = null;
+        int offset = 0;
+        int expected = 0x0201;
+        int result = endianUtils.getUShortLE(data, offset);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testGetUShortLEWithEmptyData() throws IOException {
+        byte[] data = {};
+        int offset = 0;
+        int expected = 0x0201;
+        int result = endianUtils.getUShortLE(data, offset);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testGetUShortLEWithOffsetOutOfRange() throws IOException {
+        byte[] data = { 0x01, 0x02 };
+        int offset = 3;
+        int expected = 0x0201;
+        int result = endianUtils.getUShortLE(data, offset);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testGetUShortLEWithOffsetOutOfRange2() throws IOException {
+        byte[] data = { 0x01, 0x02 };
+        int offset = 4;
+        int expected = 0x0201;
+        int result = endianUtils.getUShortLE(data, offset);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testGetUShortLEWithOffsetOutOfRange3() throws IOException {
+        byte[] data = { 0x01, 0x02 };
+        int offset = 5;
+        int expected = 0x0201;
+        int result = endianUtils.getUShortLE(data, offset);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testGetUShortLEWithOffsetOutOfRange4() throws IOException {
+        byte[] data = { 0x01, 0x02 };
+        int offset = 6;
+        int expected = 0x0201;
+        int result = endianUtils.getUShortLE(data, offset);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testGetUShortLEWithOffsetOutOfRange5() throws IOException {
+        byte[] data = { 0x01, 0x02 };
+        int offset = 7;
+        int expected = 0x0201;
+    }
+}
+
+--------------------------------------------
+Error in EndianUtils_getUShortLE_15_0_Test: line 3 : cannot find symbol
+  symbol:   class extension
+  location: package org.junit.jupiter.api
+Error in EndianUtils_getUShortLE_15_0_Test: line 3 : static import only from classes and interfaces

@@ -1,0 +1,89 @@
+package org.apache.tika.io;
+
+import static org.junit.jupiter.api.extension.ExtendWith;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import org.apache.tika.io.EndianUtils;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import java.io.InputStream;
+import org.apache.tika.exception.TikaException;
+import org.mockito.*;
+import org.junit.jupiter.api.*;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+@ExtendWith(MockitoExtension.class)
+public class EndianUtils_ubyteToInt_29_1_Test {
+
+    private EndianUtils endianUtils;
+
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+        endianUtils = new EndianUtils();
+    }
+
+    @Test
+    public void testUbyteToInt() throws IOException {
+        // Test with a positive byte value
+        byte b = 0x12;
+        int result = endianUtils.ubyteToInt(b);
+        assertEquals(0x12, result);
+        // Test with a negative byte value
+        b = (byte) -0x12;
+        result = endianUtils.ubyteToInt(b);
+        // Note: Java's byte is signed, so -128 is represented as 128 in unsigned
+        assertEquals(0x12, result);
+        // Test with a byte value that is 0xFF
+        b = (byte) 0xFF;
+        result = endianUtils.ubyteToInt(b);
+        assertEquals(0xFF, result);
+        // Test with a byte value that is 0x00
+        b = (byte) 0x00;
+        result = endianUtils.ubyteToInt(b);
+        assertEquals(0x00, result);
+    }
+
+    @Test
+    public void testUbyteToIntWithReflection() throws Exception {
+        Method method = EndianUtils.class.getDeclaredMethod("ubyteToInt", byte.class);
+        method.setAccessible(true);
+        // Test with a positive byte value
+        byte b = 0x12;
+        int result = (int) method.invoke(endianUtils, b);
+        assertEquals(0x12, result);
+        // Test with a negative byte value
+        b = (byte) -0x12;
+        result = (int) method.invoke(endianUtils, b);
+        // Note: Java's byte is signed, so -128 is represented as 128 in unsigned
+        assertEquals(0x12, result);
+        // Test with a byte value that is 0xFF
+        b = (byte) 0xFF;
+        result = (int) method.invoke(endianUtils, b);
+        assertEquals(0xFF, result);
+        // Test with a byte value that is 0x00
+        b = (byte) 0x00;
+        result = (int) method.invoke(endianUtils, b);
+        assertEquals(0x00, result);
+    }
+
+    @Test
+    public void testUbyteToIntWithException() {
+        // Test with a null byte value
+        assertThrows(NullPointerException.class, () -> {
+            endianUtils.ubyteToInt(null);
+        });
+        // Test with a byte array
+        assertThrows(IllegalArgumentException.class, () -> {
+            endianUtils.ubyteToInt(new byte[] {});
+        });
+    }
+}
+
+--------------------------------------------
+Error in EndianUtils_ubyteToInt_29_1_Test: line 3 : cannot find symbol
+  symbol:   class extension
+  location: package org.junit.jupiter.api
+Error in EndianUtils_ubyteToInt_29_1_Test: line 3 : static import only from classes and interfaces

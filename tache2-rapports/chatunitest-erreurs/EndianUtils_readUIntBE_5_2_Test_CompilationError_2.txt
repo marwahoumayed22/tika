@@ -1,0 +1,66 @@
+package org.apache.tika.io;
+
+import org.apache.tika.io.EndianUtils;
+import org.apache.tika.exception.BufferUnderrunException;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.stream.Stream;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import java.io.InputStream;
+import org.apache.tika.exception.TikaException;
+import org.mockito.*;
+import org.junit.jupiter.api.*;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+public class EndianUtils_readUIntBE_5_2_Test {
+
+    private EndianUtils endianUtils;
+
+    @BeforeEach
+    public void setUp() {
+        endianUtils = new EndianUtils();
+    }
+
+    @Test
+    public void testReadUIntBE_NormalOperation() throws IOException {
+        byte[] data = { 0x01, 0x02, 0x03, 0x04 };
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
+        long result = endianUtils.readUIntBE(inputStream);
+        assertEquals(0x04030201L, result);
+    }
+
+    @Test
+    public void testReadUIntBE_BufferUnderrun() throws IOException {
+        byte[] data = { 0x01, 0x02 };
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
+        assertThrows(BufferUnderrunException.class, () -> endianUtils.readUIntBE(inputStream));
+    }
+
+    @Test
+    public void testReadUIntBE_NegativeByte() throws IOException {
+        byte[] data = { 0x80, 0x02, 0x03, 0x04 };
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
+        assertThrows(BufferUnderrunException.class, () -> endianUtils.readUIntBE(inputStream));
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideInvalidData")
+    public void testReadUIntBE_InvalidData(byte[] data) throws IOException {
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
+        assertThrows(BufferUnderrunException.class, () -> endianUtils.readUIntBE(inputStream));
+    }
+
+    private static Stream<Arguments> provideInvalidData() {
+        return Stream.of(Arguments.of(new byte[0]), Arguments.of(new byte[] { 0x01 }), Arguments.of(new byte[] { 0x01, 0x02, 0x03 }));
+    }
+}
+
+--------------------------------------------
+Error in EndianUtils_readUIntBE_5_2_Test: line 4 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: package org.apache.tika.exception

@@ -1,0 +1,87 @@
+package org.apache.tika.io;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import org.apache.tika.exception.BufferUnderrunException;
+import org.apache.tika.io.EndianUtils;
+import org.mockito.*;
+import org.junit.jupiter.api.*;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.apache.tika.exception.TikaException;
+
+public class EndianUtils_readIntBE_7_2_Test {
+
+    private InputStream inputStream;
+
+    private EndianUtils endianUtils;
+
+    @BeforeEach
+    public void setUp() {
+        endianUtils = new EndianUtils();
+    }
+
+    @Test
+    public void testReadIntBE_NormalOperation() throws IOException {
+        // Create a mock input stream with a specific byte sequence
+        inputStream = mock(InputStream.class);
+        when(inputStream.read()).thenReturn(0x12, 0x34, 0x56, 0x78);
+        // Call the method to be tested
+        int result = endianUtils.readIntBE(inputStream);
+        // Verify the result
+        assertEquals(0x12345678, result);
+        // Verify that the input stream was read correctly
+        verify(inputStream).read();
+        verify(inputStream).read();
+        verify(inputStream).read();
+        verify(inputStream).read();
+    }
+
+    @Test
+    public void testReadIntBE_BufferUnderrun() throws IOException {
+        // Create a mock input stream with a specific byte sequence
+        inputStream = mock(InputStream.class);
+        when(inputStream.read()).thenReturn(0x12, 0x34);
+        // Call the method to be tested
+        assertThrows(BufferUnderrunException.class, () -> {
+            endianUtils.readIntBE(inputStream);
+        });
+        // Verify that the input stream was read correctly
+        verify(inputStream).read();
+        verify(inputStream).read();
+    }
+
+    @Test
+    public void testReadIntBE_IOException() throws IOException {
+        // Create a mock input stream that throws an IOException
+        inputStream = mock(InputStream.class);
+        when(inputStream.read()).thenThrow(new IOException("Simulated I/O error"));
+        // Call the method to be tested
+        assertThrows(IOException.class, () -> {
+            endianUtils.readIntBE(inputStream);
+        });
+        // Verify that the input stream was not read
+        verify(inputStream, never()).read();
+    }
+
+    @Test
+    public void testReadIntBE_NegativeByte() throws IOException {
+        // Create a mock input stream with a negative byte
+        inputStream = mock(InputStream.class);
+        when(inputStream.read()).thenReturn(-1);
+        // Call the method to be tested
+        assertThrows(BufferUnderrunException.class, () -> {
+            endianUtils.readIntBE(inputStream);
+        });
+        // Verify that the input stream was read correctly
+        verify(inputStream).read();
+    }
+}
+
+--------------------------------------------
+Error in EndianUtils_readIntBE_7_2_Test: line 6 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: package org.apache.tika.exception

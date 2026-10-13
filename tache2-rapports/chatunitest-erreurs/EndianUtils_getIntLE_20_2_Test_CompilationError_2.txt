@@ -1,0 +1,115 @@
+package org.apache.tika.io;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import org.apache.tika.exception.TikaException;
+import org.apache.tika.io.EndianUtils;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.*;
+import org.junit.jupiter.api.*;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+public class EndianUtils_getIntLE_20_2_Test {
+
+    private EndianUtils endianUtils;
+
+    @BeforeEach
+    public void setUp() {
+        endianUtils = new EndianUtils();
+    }
+
+    @Test
+    public void testGetIntLENormalCase() {
+        byte[] data = { 0x01, 0x02, 0x03, 0x04 };
+        int result = endianUtils.getIntLE(data);
+        assertEquals(0x04030201, result);
+    }
+
+    @Test
+    public void testGetIntLEEdgeCaseSingleByte() {
+        byte[] data = { 0x01 };
+        int result = endianUtils.getIntLE(data);
+        assertEquals(0x01, result);
+    }
+
+    @Test
+    public void testGetIntLEEdgeCaseTwoBytes() {
+        byte[] data = { 0x01, 0x02 };
+        int result = endianUtils.getIntLE(data);
+        assertEquals(0x0201, result);
+    }
+
+    @Test
+    public void testGetIntLEEdgeCaseThreeBytes() {
+        byte[] data = { 0x01, 0x02, 0x03 };
+        int result = endianUtils.getIntLE(data);
+        assertEquals(0x030201, result);
+    }
+
+    @Test
+    public void testGetIntLEEdgeCaseFourBytes() {
+        byte[] data = { 0x01, 0x02, 0x03, 0x04 };
+        int result = endianUtils.getIntLE(data);
+        assertEquals(0x04030201, result);
+    }
+
+    @Test
+    public void testGetIntLENegativeValue() {
+        byte[] data = { 0xFF, 0xFF, 0xFF, 0xFF };
+        int result = endianUtils.getIntLE(data);
+        assertEquals(-1, result);
+    }
+
+    @Test
+    public void testGetIntLEOffsetZero() {
+        byte[] data = { 0x01, 0x02, 0x03, 0x04 };
+        int result = endianUtils.getIntLE(data, 0);
+        assertEquals(0x04030201, result);
+    }
+
+    @Test
+    public void testGetIntLEOffsetOne() {
+        byte[] data = { 0x01, 0x02, 0x03, 0x04 };
+        int result = endianUtils.getIntLE(data, 1);
+        assertEquals(0x03040102, result);
+    }
+
+    @Test
+    public void testGetIntLEOffsetTwo() {
+        byte[] data = { 0x01, 0x02, 0x03, 0x04 };
+        int result = endianUtils.getIntLE(data, 2);
+        assertEquals(0x02040103, result);
+    }
+
+    @Test
+    public void testGetIntLEOffsetThree() {
+        byte[] data = { 0x01, 0x02, 0x03, 0x04 };
+        int result = endianUtils.getIntLE(data, 3);
+        assertEquals(0x01040302, result);
+    }
+
+    @Test
+    public void testGetIntLEOffsetOutOfRange() {
+        byte[] data = { 0x01, 0x02, 0x03, 0x04 };
+        assertThrows(IndexOutOfBoundsException.class, () -> endianUtils.getIntLE(data, 4));
+    }
+
+    @Test
+    public void testGetIntLEOffsetNegative() {
+        byte[] data = { 0x01, 0x02, 0x03, 0x04 };
+        assertThrows(IndexOutOfBoundsException.class, () -> endianUtils.getIntLE(data, -1));
+    }
+
+    @Test
+    public void testGetIntLENullData() {
+    }
+}
+
+--------------------------------------------
+Error in EndianUtils_getIntLE_20_2_Test: line 61 : incompatible types: possible lossy conversion from int to byte
+Error in EndianUtils_getIntLE_20_2_Test: line 61 : incompatible types: possible lossy conversion from int to byte
+Error in EndianUtils_getIntLE_20_2_Test: line 61 : incompatible types: possible lossy conversion from int to byte
+Error in EndianUtils_getIntLE_20_2_Test: line 61 : incompatible types: possible lossy conversion from int to byte

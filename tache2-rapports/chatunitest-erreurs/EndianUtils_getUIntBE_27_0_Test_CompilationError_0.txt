@@ -1,0 +1,115 @@
+package org.apache.tika.io;
+
+import static org.junit.jupiter.api.extension.ExtendWith;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import org.apache.tika.io.EndianUtils;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.*;
+import org.junit.jupiter.api.*;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+import java.io.InputStream;
+import org.apache.tika.exception.TikaException;
+
+@ExtendWith(MockitoExtension.class)
+public class EndianUtils_getUIntBE_27_0_Test {
+
+    @InjectMocks
+    private EndianUtils endianUtils;
+
+    @Mock
+    private InputStream inputStream;
+
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    public void testGetUIntBEWithValidInput() throws IOException {
+        // Test data
+        byte[] data = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
+        int offset = 0;
+        // Expected result
+        long expected = 0x0102030405060708L;
+        // Call the method
+        long result = endianUtils.getUIntBE(data, offset);
+        // Verify the result
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testGetUIntBEWithNegativeOffset() throws IOException {
+        // Test data
+        byte[] data = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
+        int offset = -1;
+        // Expected result
+        long expected = 0x0102030405060708L;
+        // Call the method
+        long result = endianUtils.getUIntBE(data, offset);
+        // Verify the result
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testGetUIntBEWithOffsetOutOfRange() throws IOException {
+        // Test data
+        byte[] data = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
+        int offset = 8;
+        // Expected result
+        long expected = 0x0102030405060708L;
+        // Call the method
+        long result = endianUtils.getUIntBE(data, offset);
+        // Verify the result
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testGetUIntBEWithZeroLengthData() throws IOException {
+        // Test data
+        byte[] data = {};
+        int offset = 0;
+        // Expected result
+        long expected = 0L;
+        // Call the method
+        long result = endianUtils.getUIntBE(data, offset);
+        // Verify the result
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testGetUIntBEWithNullData() throws IOException {
+        // Test data
+        byte[] data = null;
+        int offset = 0;
+        // Expected result
+        long expected = 0L;
+        // Call the method
+        long result = endianUtils.getUIntBE(data, offset);
+        // Verify the result
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testGetUIntBEWithInvalidOffset() throws IOException {
+        // Test data
+        byte[] data = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
+        int offset = 9;
+        // Expected result
+        long expected = 0L;
+        // Call the method
+        long result = endianUtils.getUIntBE(data, offset);
+        // Verify the result
+        assertEquals(expected, result);
+    }
+}
+
+--------------------------------------------
+Error in EndianUtils_getUIntBE_27_0_Test: line 3 : cannot find symbol
+  symbol:   class extension
+  location: package org.junit.jupiter.api
+Error in EndianUtils_getUIntBE_27_0_Test: line 3 : static import only from classes and interfaces

@@ -1,0 +1,69 @@
+package org.apache.tika.io;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import org.apache.tika.io.EndianUtils;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.apache.tika.exception.TikaException;
+// Import BufferUnderrunException
+import org.apache.tika.exception.BufferUnderrunException;
+import org.mockito.*;
+import org.junit.jupiter.api.*;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+public class EndianUtils_readUIntBE_5_1_Test {
+
+    private InputStream inputStream;
+
+    private EndianUtils endianUtils;
+
+    @BeforeEach
+    public void setUp() {
+        endianUtils = new EndianUtils();
+        inputStream = mock(InputStream.class);
+    }
+
+    @Test
+    public void testReadUIntBE() throws IOException {
+        // Test case 1: Normal case with valid input
+        when(inputStream.read()).thenReturn(0x12, 0x34, 0x56, 0x78);
+        long result = endianUtils.readUIntBE(inputStream);
+        assertEquals(0x12345678L, result);
+        // Test case 2: Normal case with valid input (negative values should not occur)
+        when(inputStream.read()).thenReturn(0x01, 0x02, 0x03, 0x04);
+        result = endianUtils.readUIntBE(inputStream);
+        assertEquals(0x01020304L, result);
+        // Test case 3: BufferUnderrunException when input is exhausted
+        when(inputStream.read()).thenReturn(0x12, 0x34);
+        assertThrows(BufferUnderrunException.class, () -> endianUtils.readUIntBE(inputStream));
+    }
+
+    @Test
+    public void testReadUIntBEWithNegativeValues() throws IOException {
+        // Test case 4: BufferUnderrunException when negative values are encountered
+        when(inputStream.read()).thenReturn(-1, 0x34, 0x56, 0x78);
+        assertThrows(BufferUnderrunException.class, () -> endianUtils.readUIntBE(inputStream));
+    }
+
+    @Test
+    public void testReadUIntBEWithNegativeValuesInMiddle() throws IOException {
+        // Test case 5: BufferUnderrunException when negative values are encountered in the middle
+        when(inputStream.read()).thenReturn(0x12, -1, 0x56, 0x78);
+        assertThrows(BufferUnderrunException.class, () -> endianUtils.readUIntBE(inputStream));
+    }
+
+    @Test
+    public void testReadUIntBEWithNegativeValuesAtEnd() throws IOException {
+        // Test case 6: BufferUnderrunException when negative values are encountered at the end
+        when(inputStream.read()).thenReturn(0x12, 0x34, 0x56, -1);
+        assertThrows(BufferUnderrunException.class, () -> endianUtils.readUIntBE(inputStream));
+    }
+}
+
+--------------------------------------------
+Error in EndianUtils_readUIntBE_5_1_Test: line 11 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: package org.apache.tika.exception

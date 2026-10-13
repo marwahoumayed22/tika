@@ -1,0 +1,101 @@
+package org.apache.tika.io;
+
+import static org.junit.jupiter.api.extension.ExtendWith;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import org.apache.tika.io.EndianUtils;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import java.io.InputStream;
+import org.apache.tika.exception.TikaException;
+import org.mockito.*;
+import org.junit.jupiter.api.*;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+@ExtendWith(MockitoExtension.class)
+public class EndianUtils_getShortLE_12_0_Test {
+
+    @InjectMocks
+    private EndianUtils endianUtils;
+
+    @Mock
+    private Method getUShortLEMethod;
+
+    @BeforeEach
+    public void setUp() throws Exception {
+        MockitoAnnotations.openMocks(this);
+        // Mock the getUShortLE method
+        getUShortLEMethod = EndianUtils.class.getDeclaredMethod("getUShortLE", byte[].class, int.class);
+        getUShortLEMethod.setAccessible(true);
+        // Mock the return value of getUShortLE
+        when(getUShortLEMethod.invoke(null, new byte[] { 0x01, 0x02 }, 0)).thenReturn(0x0201);
+    }
+
+    @Test
+    public void testGetShortLEWithValidInput() throws Exception {
+        byte[] data = { 0x01, 0x02 };
+        short result = endianUtils.getShortLE(data);
+        assertEquals(0x0201, result);
+    }
+
+    @Test
+    public void testGetShortLEWithOffset() throws Exception {
+        byte[] data = { 0x01, 0x02 };
+        short result = endianUtils.getShortLE(data, 1);
+        assertEquals(0x0102, result);
+    }
+
+    @Test
+    public void testGetShortLEWithInvalidOffset() throws Exception {
+        byte[] data = { 0x01, 0x02 };
+        assertThrows(IndexOutOfBoundsException.class, () -> endianUtils.getShortLE(data, 2));
+    }
+
+    @Test
+    public void testGetShortLEWithNullInput() throws Exception {
+        assertThrows(NullPointerException.class, () -> endianUtils.getShortLE(null));
+    }
+
+    @Test
+    public void testGetShortLEWithEmptyInput() throws Exception {
+        assertThrows(IndexOutOfBoundsException.class, () -> endianUtils.getShortLE(new byte[0]));
+    }
+
+    @Test
+    public void testGetShortLEWithNegativeOffset() throws Exception {
+        byte[] data = { 0x01, 0x02 };
+        assertThrows(IndexOutOfBoundsException.class, () -> endianUtils.getShortLE(data, -1));
+    }
+
+    @Test
+    public void testGetShortLEWithLargeOffset() throws Exception {
+        byte[] data = { 0x01, 0x02 };
+        assertThrows(IndexOutOfBoundsException.class, () -> endianUtils.getShortLE(data, 2));
+    }
+
+    @Test
+    public void testGetShortLEWithLargeArray() throws Exception {
+        byte[] data = new byte[10];
+        data[0] = 0x01;
+        data[1] = 0x02;
+        short result = endianUtils.getShortLE(data);
+        assertEquals(0x0201, result);
+    }
+
+    @Test
+    public void testGetShortLEWithLargeArrayAndOffset() throws Exception {
+        byte[] data = new byte[10];
+        data[0] = 0x01;
+        data[1] = 0x02;
+        short result = endianUtils.getShortLE(data, 1);
+        assertEquals(0x0102, result);
+    }
+}
+
+--------------------------------------------
+Error in EndianUtils_getShortLE_12_0_Test: line 3 : cannot find symbol
+  symbol:   class extension
+  location: package org.junit.jupiter.api
+Error in EndianUtils_getShortLE_12_0_Test: line 3 : static import only from classes and interfaces

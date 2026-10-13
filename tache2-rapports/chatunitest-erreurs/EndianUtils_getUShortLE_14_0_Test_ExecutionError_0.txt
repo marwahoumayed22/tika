@@ -1,0 +1,115 @@
+package org.apache.tika.io;
+
+import org.apache.tika.io.EndianUtils;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import org.mockito.*;
+import org.junit.jupiter.api.*;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+import java.io.InputStream;
+import org.apache.tika.exception.TikaException;
+
+@ExtendWith(MockitoExtension.class)
+public class EndianUtils_getUShortLE_14_0_Test {
+
+    @InjectMocks
+    private EndianUtils endianUtils;
+
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    public void testGetUShortLEWithValidData() throws IOException {
+        byte[] data = { 0x01, 0x02 };
+        int result = endianUtils.getUShortLE(data);
+        assertEquals(0x0201, result);
+    }
+
+    @Test
+    public void testGetUShortLEWithNegativeOffset() {
+        byte[] data = { 0x01, 0x02 };
+        assertThrows(IndexOutOfBoundsException.class, () -> endianUtils.getUShortLE(data, -1));
+    }
+
+    @Test
+    public void testGetUShortLEWithOffsetOutOfRange() {
+        byte[] data = { 0x01, 0x02 };
+        assertThrows(IndexOutOfBoundsException.class, () -> endianUtils.getUShortLE(data, 2));
+    }
+
+    @Test
+    public void testGetUShortLEWithEmptyData() {
+        byte[] data = {};
+        assertThrows(IndexOutOfBoundsException.class, () -> endianUtils.getUShortLE(data, 0));
+    }
+
+    @Test
+    public void testGetUShortLEWithSingleByteData() {
+        byte[] data = { 0x01 };
+        assertThrows(IndexOutOfBoundsException.class, () -> endianUtils.getUShortLE(data, 0));
+    }
+
+    @Test
+    public void testGetUShortLEWithTwoByteData() throws IOException {
+        byte[] data = { 0x01, 0x02 };
+        int result = endianUtils.getUShortLE(data, 0);
+        assertEquals(0x0201, result);
+    }
+
+    @Test
+    public void testGetUShortLEWithTwoByteDataWithOffset() throws IOException {
+        byte[] data = { 0x01, 0x02 };
+        int result = endianUtils.getUShortLE(data, 1);
+        assertEquals(0x0102, result);
+    }
+
+    @Test
+    public void testGetUShortLEWithTwoByteDataWithOffsetAndNegativeOffset() {
+        byte[] data = { 0x01, 0x02 };
+        assertThrows(IndexOutOfBoundsException.class, () -> endianUtils.getUShortLE(data, -1));
+    }
+
+    @Test
+    public void testGetUShortLEWithTwoByteDataWithOffsetOutOfRange() {
+        byte[] data = { 0x01, 0x02 };
+        assertThrows(IndexOutOfBoundsException.class, () -> endianUtils.getUShortLE(data, 2));
+    }
+
+    @Test
+    public void testGetUShortLEWithTwoByteDataWithOffsetAndEmptyData() {
+        byte[] data = {};
+        assertThrows(IndexOutOfBoundsException.class, () -> endianUtils.getUShortLE(data, 0));
+    }
+
+    @Test
+    public void testGetUShortLEWithTwoByteDataWithOffsetAndSingleByteData() {
+        byte[] data = { 0x01 };
+        assertThrows(IndexOutOfBoundsException.class, () -> endianUtils.getUShortLE(data, 0));
+    }
+
+    @Test
+    public void testGetUShortLEWithTwoByteDataWithOffsetAndTwoByteData() throws IOException {
+        byte[] data = { 0x01, 0x02 };
+        int result = endianUtils.getUShortLE(data, 0);
+        assertEquals(0x0201, result);
+    }
+}
+
+--------------------------------------------
+Error in testGetUShortLEWithTwoByteDataWithOffsetAndSingleByteData(): line 23 : java.lang.IllegalStateException: Could not initialize plugin: interface org.mockito.plugins.MockMaker (alternate: null)
+Error in testGetUShortLEWithNegativeOffset(): line 23 : java.lang.IllegalStateException: Could not initialize plugin: interface org.mockito.plugins.MockMaker (alternate: null)
+Error in testGetUShortLEWithSingleByteData(): line 23 : java.lang.IllegalStateException: Could not initialize plugin: interface org.mockito.plugins.MockMaker (alternate: null)
+Error in testGetUShortLEWithOffsetOutOfRange(): line 23 : java.lang.IllegalStateException: Could not initialize plugin: interface org.mockito.plugins.MockMaker (alternate: null)
+Error in testGetUShortLEWithTwoByteDataWithOffset(): line 23 : java.lang.IllegalStateException: Could not initialize plugin: interface org.mockito.plugins.MockMaker (alternate: null)
+Error in testGetUShortLEWithTwoByteDataWithOffsetAndEmptyData(): line 23 : java.lang.IllegalStateException: Could not initialize plugin: interface org.mockito.plugins.MockMaker (alternate: null)
+Error in testGetUShortLEWithTwoByteDataWithOffsetOutOfRange(): line 23 : java.lang.IllegalStateException: Could not initialize plugin: interface org.mockito.plugins.MockMaker (alternate: null)
+Error in testGetUShortLEWithTwoByteDataWithOffsetAndTwoByteData(): line 23 : java.lang.IllegalStateException: Could not initialize plugin: interface org.mockito.plugins.MockMaker (alternate: null)
+Error in testGetUShortLEWithTwoByteDataWithOffsetAndNegativeOffset(): line 23 : java.lang.IllegalStateException: Could not initialize plugin: interface org.mockito.plugins.MockMaker (alternate: null)
+Error in testGetUShortLEWithEmptyData(): line 23 : java.lang.IllegalStateException: Could not initialize plugin: interface org.mockito.plugins.MockMaker (alternate: null)
+Error in testGetUShortLEWithValidData(): line 23 : java.lang.IllegalStateException: Could not initialize plugin: interface org.mockito.plugins.MockMaker (alternate: null)
+Error in testGetUShortLEWithTwoByteData(): line 23 : java.lang.IllegalStateException: Could not initialize plugin: interface org.mockito.plugins.MockMaker (alternate: null)

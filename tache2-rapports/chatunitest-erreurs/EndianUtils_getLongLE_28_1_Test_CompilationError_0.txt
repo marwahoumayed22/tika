@@ -1,0 +1,86 @@
+package org.apache.tika.io;
+
+import static org.junit.jupiter.api.extension.ExtendWith;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import org.apache.tika.exception.TikaException;
+import org.apache.tika.io.EndianUtils;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.*;
+import org.junit.jupiter.api.*;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+@ExtendWith(MockitoExtension.class)
+public class EndianUtils_getLongLE_28_1_Test {
+
+    @Mock
+    private InputStream inputStream;
+
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    public void testGetLongLEWithValidData() throws IOException {
+        byte[] data = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
+        int offset = 0;
+        when(inputStream.read(data, offset, data.length)).thenReturn(data.length);
+        long result = EndianUtils.getLongLE(data, offset);
+        assertEquals(0x0102030405060708L, result);
+    }
+
+    @Test
+    public void testGetLongLEWithNegativeOffset() {
+        byte[] data = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
+        int offset = -1;
+        assertThrows(IndexOutOfBoundsException.class, () -> EndianUtils.getLongLE(data, offset));
+    }
+
+    @Test
+    public void testGetLongLEWithOffsetGreaterThanDataLength() {
+        byte[] data = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
+        int offset = 9;
+        assertThrows(IndexOutOfBoundsException.class, () -> EndianUtils.getLongLE(data, offset));
+    }
+
+    @Test
+    public void testGetLongLEWithOffsetEqualToDataLength() {
+        byte[] data = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
+        int offset = 8;
+        assertThrows(IndexOutOfBoundsException.class, () -> EndianUtils.getLongLE(data, offset));
+    }
+
+    @Test
+    public void testGetLongLEWithOffsetEqualToZero() throws IOException {
+        byte[] data = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
+        int offset = 0;
+        when(inputStream.read(data, offset, data.length)).thenReturn(data.length);
+        long result = EndianUtils.getLongLE(data, offset);
+        assertEquals(0x0102030405060708L, result);
+    }
+
+    @Test
+    public void testGetLongLEWithOffsetEqualToOne() throws IOException {
+        byte[] data = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
+        int offset = 1;
+        when(inputStream.read(data, offset, data.length)).thenReturn(data.length);
+        long result = EndianUtils.getLongLE(data, offset);
+        assertEquals(0x0203040506070801L, result);
+    }
+
+    @Test
+    public void testGetLongLEWithOffsetEqualToSeven() throws IOException {
+        byte[] data = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
+        int offset = 7;
+    }
+}
+
+--------------------------------------------
+Error in EndianUtils_getLongLE_28_1_Test: line 3 : cannot find symbol
+  symbol:   class extension
+  location: package org.junit.jupiter.api
+Error in EndianUtils_getLongLE_28_1_Test: line 3 : static import only from classes and interfaces

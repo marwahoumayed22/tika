@@ -1,0 +1,73 @@
+package org.apache.tika.io;
+
+import static org.junit.jupiter.api.extension.ExtendWith;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import org.apache.tika.io.EndianUtils;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.*;
+import org.junit.jupiter.api.*;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+import java.io.InputStream;
+import org.apache.tika.exception.TikaException;
+
+@ExtendWith(MockitoExtension.class)
+public class EndianUtils_readUE7_11_0_Test {
+
+    private EndianUtils endianUtils;
+
+    private ByteArrayInputStream inputStream;
+
+    @BeforeEach
+    public void setUp() {
+        endianUtils = new EndianUtils();
+        inputStream = new ByteArrayInputStream(new byte[] { 0x01, 0x02, 0x03, 0x04 });
+    }
+
+    @Test
+    public void testReadUE7() throws IOException {
+        // Test case 1: Normal case with 4 bytes
+        long result = (long) invokePrivateMethod(endianUtils, "readUE7", inputStream);
+        assertEquals(0x01020304L, result);
+        // Test case 2: Normal case with 3 bytes
+        inputStream.reset();
+        inputStream.write(new byte[] { 0x01, 0x02, 0x03 });
+        result = (long) invokePrivateMethod(endianUtils, "readUE7", inputStream);
+        assertEquals(0x010203L, result);
+        // Test case 3: Normal case with 2 bytes
+        inputStream.reset();
+        inputStream.write(new byte[] { 0x01, 0x02 });
+        result = (long) invokePrivateMethod(endianUtils, "readUE7", inputStream);
+        assertEquals(0x0102L, result);
+        // Test case 4: Normal case with 1 byte
+        inputStream.reset();
+        inputStream.write(new byte[] { 0x01 });
+        result = (long) invokePrivateMethod(endianUtils, "readUE7", inputStream);
+        assertEquals(0x01L, result);
+        // Test case 5: Buffer underrun
+        inputStream.reset();
+        inputStream.write(new byte[] { 0x01 });
+        try {
+            invokePrivateMethod(endianUtils, "readUE7", inputStream);
+            fail("Expected IOException for buffer underrun");
+        } catch (IOException e) {
+            assertEquals("Buffer underun; expected one more byte", e.getMessage());
+        }
+    }
+
+    private Object invokePrivateMethod(Object obj, String methodName, Object... args) throws Exception {
+        Class<?> clazz = obj.getClass();
+        Method method = clazz.getDeclaredMethod(methodName, args.getClass());
+        method.setAccessible(true);
+        return method.invoke(obj, args);
+    }
+}
+
+--------------------------------------------
+Error in EndianUtils_readUE7_11_0_Test: line 3 : cannot find symbol
+  symbol:   class extension
+  location: package org.junit.jupiter.api
+Error in EndianUtils_readUE7_11_0_Test: line 3 : static import only from classes and interfaces

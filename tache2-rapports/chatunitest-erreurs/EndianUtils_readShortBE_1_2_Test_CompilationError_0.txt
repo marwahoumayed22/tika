@@ -1,0 +1,90 @@
+package org.apache.tika.io;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import org.apache.tika.io.BufferUnderrunException;
+import org.apache.tika.io.EndianUtils;
+import org.mockito.*;
+import org.junit.jupiter.api.*;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.apache.tika.exception.TikaException;
+
+public class EndianUtils_readShortBE_1_2_Test {
+
+    private InputStream inputStream;
+
+    @BeforeEach
+    public void setUp() {
+        // Create a ByteArrayInputStream with some test data
+        inputStream = new ByteArrayInputStream(new byte[] { 0x01, 0x02 });
+    }
+
+    @Test
+    public void testReadShortBE() throws IOException, BufferUnderrunException {
+        // Test with valid input
+        short result = EndianUtils.readShortBE(inputStream);
+        assertEquals((short) 0x0201, result);
+    }
+
+    @Test
+    public void testReadShortBEBufferUnderrun() throws IOException, BufferUnderrunException {
+        // Test with buffer underrun
+        inputStream = new ByteArrayInputStream(new byte[] { 0x01 });
+        assertThrows(BufferUnderrunException.class, () -> EndianUtils.readShortBE(inputStream));
+    }
+
+    @Test
+    public void testReadShortBEIOException() throws IOException, BufferUnderrunException {
+        // Test with IOException
+        inputStream = new ByteArrayInputStream(new byte[] {});
+        assertThrows(IOException.class, () -> EndianUtils.readShortBE(inputStream));
+    }
+
+    @Test
+    public void testReadShortBENegativeValue() throws IOException, BufferUnderrunException {
+        // Test with negative value
+        inputStream = new ByteArrayInputStream(new byte[] { 0xFF, 0xFF });
+        assertThrows(BufferUnderrunException.class, () -> EndianUtils.readShortBE(inputStream));
+    }
+
+    @Test
+    public void testReadShortBENegativeValueWithBufferUnderrun() throws IOException, BufferUnderrunException {
+        // Test with negative value and buffer underrun
+        inputStream = new ByteArrayInputStream(new byte[] { 0xFF });
+        assertThrows(BufferUnderrunException.class, () -> EndianUtils.readShortBE(inputStream));
+    }
+
+    @Test
+    public void testReadShortBENegativeValueWithIOException() throws IOException, BufferUnderrunException {
+        // Test with negative value and IOException
+        inputStream = new ByteArrayInputStream(new byte[] {});
+        assertThrows(IOException.class, () -> EndianUtils.readShortBE(inputStream));
+    }
+}
+
+--------------------------------------------
+Error in EndianUtils_readShortBE_1_2_Test: line 6 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: package org.apache.tika.io
+Error in EndianUtils_readShortBE_1_2_Test: line 27 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: class org.apache.tika.io.EndianUtils_readShortBE_1_2_Test
+Error in EndianUtils_readShortBE_1_2_Test: line 34 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: class org.apache.tika.io.EndianUtils_readShortBE_1_2_Test
+Error in EndianUtils_readShortBE_1_2_Test: line 41 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: class org.apache.tika.io.EndianUtils_readShortBE_1_2_Test
+Error in EndianUtils_readShortBE_1_2_Test: line 48 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: class org.apache.tika.io.EndianUtils_readShortBE_1_2_Test
+Error in EndianUtils_readShortBE_1_2_Test: line 55 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: class org.apache.tika.io.EndianUtils_readShortBE_1_2_Test
+Error in EndianUtils_readShortBE_1_2_Test: line 62 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: class org.apache.tika.io.EndianUtils_readShortBE_1_2_Test

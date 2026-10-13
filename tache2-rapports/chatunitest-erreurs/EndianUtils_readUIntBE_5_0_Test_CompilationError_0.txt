@@ -1,0 +1,67 @@
+package org.apache.tika.io;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import org.apache.tika.exception.BufferUnderrunException;
+import org.apache.tika.exception.TikaException;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.*;
+import org.junit.jupiter.api.*;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+@ExtendWith(MockitoExtension.class)
+public class EndianUtils_readUIntBE_5_0_Test {
+
+    @Mock
+    private InputStream mockInputStream;
+
+    @BeforeEach
+    public void setUp() {
+        // Mock the behavior of the InputStream
+        when(mockInputStream.read()).thenReturn(0x12, 0x34, 0x56, 0x78);
+    }
+
+    @Test
+    public void testReadUIntBE_NormalCase() throws IOException, BufferUnderrunException {
+        // Call the method using reflection
+        Object result = invokePrivateMethod(EndianUtils.class, "readUIntBE", mockInputStream);
+        assertEquals(0x12345678L, result);
+    }
+
+    @Test
+    public void testReadUIntBE_InvalidInput() throws IOException, BufferUnderrunException {
+        // Mock the behavior of the InputStream to return a negative value
+        when(mockInputStream.read()).thenReturn(-1);
+        assertThrows(BufferUnderrunException.class, () -> invokePrivateMethod(EndianUtils.class, "readUIntBE", mockInputStream));
+    }
+
+    @Test
+    public void testReadUIntBE_BufferUnderrun() throws IOException, BufferUnderrunException {
+        // Mock the behavior of the InputStream to return less than 4 bytes
+        when(mockInputStream.read()).thenReturn(0x12, 0x34);
+        assertThrows(BufferUnderrunException.class, () -> invokePrivateMethod(EndianUtils.class, "readUIntBE", mockInputStream));
+    }
+
+    private Object invokePrivateMethod(Class<?> clazz, String methodName, Object... args) throws Exception {
+        java.lang.reflect.Method method = clazz.getDeclaredMethod(methodName, args.getClass());
+        method.setAccessible(true);
+        return method.invoke(clazz.getDeclaredConstructor().newInstance(), args);
+    }
+}
+
+--------------------------------------------
+Error in EndianUtils_readUIntBE_5_0_Test: line 6 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: package org.apache.tika.exception
+Error in EndianUtils_readUIntBE_5_0_Test: line 28 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: class org.apache.tika.io.EndianUtils_readUIntBE_5_0_Test
+Error in EndianUtils_readUIntBE_5_0_Test: line 35 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: class org.apache.tika.io.EndianUtils_readUIntBE_5_0_Test
+Error in EndianUtils_readUIntBE_5_0_Test: line 42 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: class org.apache.tika.io.EndianUtils_readUIntBE_5_0_Test

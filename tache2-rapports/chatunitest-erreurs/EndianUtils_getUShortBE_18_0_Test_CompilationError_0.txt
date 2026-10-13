@@ -1,0 +1,132 @@
+package org.apache.tika.io;
+
+import static org.junit.jupiter.api.extension.ExtendWith;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import org.apache.tika.io.EndianUtils;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.*;
+import org.junit.jupiter.api.*;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+import org.mockito.junit.jupiter.MockitoExtension;
+import java.io.InputStream;
+import org.apache.tika.exception.TikaException;
+
+@ExtendWith(MockitoExtension.class)
+public class EndianUtils_getUShortBE_18_0_Test {
+
+    private EndianUtils endianUtils;
+
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+        endianUtils = new EndianUtils();
+    }
+
+    @Test
+    public void testGetUShortBEWithValidData() throws IOException {
+        byte[] data = { 0x12, 0x34 };
+        int result = endianUtils.getUShortBE(data);
+        assertEquals(0x3412, result);
+    }
+
+    @Test
+    public void testGetUShortBEWithNegativeOffset() {
+        byte[] data = { 0x12, 0x34 };
+        assertThrows(IndexOutOfBoundsException.class, () -> {
+            endianUtils.getUShortBE(data, -1);
+        });
+    }
+
+    @Test
+    public void testGetUShortBEWithOffsetOutOfRange() {
+        byte[] data = { 0x12, 0x34 };
+        assertThrows(IndexOutOfBoundsException.class, () -> {
+            endianUtils.getUShortBE(data, 2);
+        });
+    }
+
+    @Test
+    public void testGetUShortBEWithEmptyData() {
+        byte[] data = {};
+        assertThrows(IndexOutOfBoundsException.class, () -> {
+            endianUtils.getUShortBE(data, 0);
+        });
+    }
+
+    @Test
+    public void testGetUShortBEWithSingleByteData() {
+        byte[] data = { 0x12 };
+        assertThrows(IndexOutOfBoundsException.class, () -> {
+            endianUtils.getUShortBE(data, 0);
+        });
+    }
+
+    @Test
+    public void testGetUShortBEWithNullData() {
+        assertThrows(NullPointerException.class, () -> {
+            endianUtils.getUShortBE(null, 0);
+        });
+    }
+
+    @Test
+    public void testGetUShortBEWithLargeOffset() throws IOException {
+        byte[] data = { 0x12, 0x34, 0x56, 0x78 };
+        int result = endianUtils.getUShortBE(data, 2);
+        assertEquals(0x7856, result);
+    }
+
+    @Test
+    public void testGetUShortBEWithLargeOffsetAndNegativeOffset() throws IOException {
+        byte[] data = { 0x12, 0x34, 0x56, 0x78 };
+        int result = endianUtils.getUShortBE(data, -2);
+        assertEquals(0x7856, result);
+    }
+
+    @Test
+    public void testGetUShortBEWithLargeOffsetAndOffsetOutOfRange() throws IOException {
+        byte[] data = { 0x12, 0x34, 0x56, 0x78 };
+        assertThrows(IndexOutOfBoundsException.class, () -> {
+            endianUtils.getUShortBE(data, 4);
+        });
+    }
+
+    @Test
+    public void testGetUShortBEWithLargeOffsetAndEmptyData() throws IOException {
+        byte[] data = {};
+        assertThrows(IndexOutOfBoundsException.class, () -> {
+            endianUtils.getUShortBE(data, 2);
+        });
+    }
+
+    @Test
+    public void testGetUShortBEWithLargeOffsetAndSingleByteData() throws IOException {
+        byte[] data = { 0x12 };
+        assertThrows(IndexOutOfBoundsException.class, () -> {
+            endianUtils.getUShortBE(data, 2);
+        });
+    }
+
+    @Test
+    public void testGetUShortBEWithLargeOffsetAndNullData() throws IOException {
+        assertThrows(NullPointerException.class, () -> {
+            endianUtils.getUShortBE(null, 2);
+        });
+    }
+
+    @Test
+    public void testGetUShortBEWithLargeOffsetAndNegativeOffsetOutOfRange() throws IOException {
+        byte[] data = { 0x12, 0x34, 0x56, 0x78 };
+        assertThrows(IndexOutOfBoundsException.class, () -> {
+            endianUtils.getUShortBE(data, -3);
+        });
+    }
+}
+
+--------------------------------------------
+Error in EndianUtils_getUShortBE_18_0_Test: line 3 : cannot find symbol
+  symbol:   class extension
+  location: package org.junit.jupiter.api
+Error in EndianUtils_getUShortBE_18_0_Test: line 3 : static import only from classes and interfaces

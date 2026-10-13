@@ -1,0 +1,82 @@
+package org.apache.tika.io;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import org.apache.tika.exception.BufferUnderrunException;
+import org.apache.tika.exception.TikaException;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.*;
+import org.junit.jupiter.api.*;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+@ExtendWith(MockitoExtension.class)
+public class EndianUtils_readIntLE_6_0_Test {
+
+    @Mock
+    private InputStream mockInputStream;
+
+    @BeforeEach
+    public void setUp() throws IOException {
+        // Mock the InputStream to return specific byte values
+        when(mockInputStream.read()).thenReturn(0x01, 0x02, 0x03, 0x04);
+    }
+
+    @Test
+    public void testReadIntLE() throws IOException, BufferUnderrunException {
+        // Call the method to be tested
+        int result = EndianUtils.readIntLE(mockInputStream);
+        // Assert the result
+        assertEquals(0x01020304, result);
+    }
+
+    @Test
+    public void testReadIntLEBufferUnderrun() throws IOException {
+        // Mock the InputStream to return a negative value
+        when(mockInputStream.read()).thenReturn(-1);
+        // Call the method to be tested
+        assertThrows(BufferUnderrunException.class, () -> EndianUtils.readIntLE(mockInputStream));
+    }
+
+    @Test
+    public void testReadIntLENegativeByte() throws IOException {
+        // Mock the InputStream to return a negative byte value
+        when(mockInputStream.read()).thenReturn(0x80, 0x02, 0x03, 0x04);
+        // Call the method to be tested
+        assertThrows(BufferUnderrunException.class, () -> EndianUtils.readIntLE(mockInputStream));
+    }
+
+    @Test
+    public void testReadIntLENegativeByte2() throws IOException {
+        // Mock the InputStream to return a negative byte value
+        when(mockInputStream.read()).thenReturn(0x01, 0x80, 0x03, 0x04);
+        // Call the method to be tested
+        assertThrows(BufferUnderrunException.class, () -> EndianUtils.readIntLE(mockInputStream));
+    }
+
+    @Test
+    public void testReadIntLENegativeByte3() throws IOException {
+        // Mock the InputStream to return a negative byte value
+        when(mockInputStream.read()).thenReturn(0x01, 0x02, 0x80, 0x04);
+        // Call the method to be tested
+        assertThrows(BufferUnderrunException.class, () -> EndianUtils.readIntLE(mockInputStream));
+    }
+
+    @Test
+    public void testReadIntLENegativeByte4() throws IOException {
+        // Mock the InputStream to return a negative byte value
+        when(mockInputStream.read()).thenReturn(0x01, 0x02, 0x03, 0x80);
+        // Call the method to be tested
+        assertThrows(BufferUnderrunException.class, () -> EndianUtils.readIntLE(mockInputStream));
+    }
+}
+
+--------------------------------------------
+Error in EndianUtils_readIntLE_6_0_Test: line 6 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: package org.apache.tika.exception
+Error in EndianUtils_readIntLE_6_0_Test: line 28 : cannot find symbol
+  symbol:   class BufferUnderrunException
+  location: class org.apache.tika.io.EndianUtils_readIntLE_6_0_Test

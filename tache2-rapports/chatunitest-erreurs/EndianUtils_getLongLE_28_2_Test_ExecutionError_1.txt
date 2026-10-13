@@ -1,0 +1,82 @@
+package org.apache.tika.io;
+
+import org.apache.tika.io.EndianUtils;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import org.mockito.*;
+import org.junit.jupiter.api.*;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+import java.io.InputStream;
+import org.apache.tika.exception.TikaException;
+
+@ExtendWith(MockitoExtension.class)
+public class EndianUtils_getLongLE_28_2_Test {
+
+    @InjectMocks
+    private EndianUtils endianUtils;
+
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    public void testGetLongLE() throws IOException {
+        // Test case 1: Normal case with valid input
+        byte[] data = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
+        int offset = 0;
+        long expected = 0x0102030405060708L;
+        assertEquals(expected, endianUtils.getLongLE(data, offset));
+        // Test case 2: Normal case with valid input and offset
+        offset = 2;
+        expected = 0x0304050607080102L;
+        assertEquals(expected, endianUtils.getLongLE(data, offset));
+        // Test case 3: Edge case with offset equal to data length
+        offset = 8;
+        expected = 0x0102030405060708L;
+        assertEquals(expected, endianUtils.getLongLE(data, offset));
+        // Test case 4: Edge case with offset equal to data length - 1
+        offset = 7;
+        expected = 0x0203040506070801L;
+        assertEquals(expected, endianUtils.getLongLE(data, offset));
+        // Test case 5: Edge case with offset equal to data length - 2
+        offset = 6;
+        expected = 0x0304050607080201L;
+        assertEquals(expected, endianUtils.getLongLE(data, offset));
+        // Test case 6: Edge case with offset equal to data length - 3
+        offset = 5;
+        expected = 0x0405060708030201L;
+        assertEquals(expected, endianUtils.getLongLE(data, offset));
+        // Test case 7: Edge case with offset equal to data length - 4
+        offset = 4;
+        expected = 0x0506070804030201L;
+        assertEquals(expected, endianUtils.getLongLE(data, offset));
+        // Test case 8: Edge case with offset equal to data length - 5
+        offset = 3;
+        expected = 0x0607080504030201L;
+        assertEquals(expected, endianUtils.getLongLE(data, offset));
+        // Test case 9: Edge case with offset equal to data length - 6
+        offset = 2;
+        expected = 0x0708060504030201L;
+        assertEquals(expected, endianUtils.getLongLE(data, offset));
+        // Test case 10: Edge case with offset equal to data length - 7
+        offset = 1;
+        expected = 0x0807060504030201L;
+        assertEquals(expected, endianUtils.getLongLE(data, offset));
+        // Test case 11: Edge case with offset equal to data length - 8
+        offset = 0;
+        expected = 0x0102030405060708L;
+        assertEquals(expected, endianUtils.getLongLE(data, offset));
+        // Test case 12: Edge case with offset equal to data length - 9
+        offset = -1;
+        expected = 0x0203040506070801L;
+        assertEquals(expected, endianUtils.getLongLE(data, offset));
+    }
+}
+
+--------------------------------------------
+Error in testGetLongLE(): line 24 : java.lang.IllegalStateException: Could not initialize plugin: interface org.mockito.plugins.MockMaker (alternate: null)

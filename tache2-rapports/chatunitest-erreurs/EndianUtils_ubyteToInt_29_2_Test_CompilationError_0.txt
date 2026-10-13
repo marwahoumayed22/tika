@@ -1,0 +1,103 @@
+package org.apache.tika.io;
+
+import org.apache.tika.io.EndianUtils;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.reflections.Reflections;
+import org.reflections.scanners.MethodAnnotationsScanner;
+import org.reflections.scanners.SubTypesScanner;
+import org.reflections.util.ClasspathHelper;
+import org.reflections.util.ConfigurationBuilder;
+import java.lang.reflect.Method;
+import java.util.Set;
+import org.mockito.*;
+import org.junit.jupiter.api.*;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+import java.io.IOException;
+import java.io.InputStream;
+import org.apache.tika.exception.TikaException;
+
+@ExtendWith(MockitoExtension.class)
+public class EndianUtils_ubyteToInt_29_2_Test {
+
+    @Test
+    public void testUbyteToInt() throws Exception {
+        // Create an instance of EndianUtils
+        EndianUtils endianUtils = new EndianUtils();
+        // Use reflection to get the private method
+        Reflections reflections = new Reflections(new ConfigurationBuilder().setUrls(ClasspathHelper.forPackage("org.apache.tika.io")).setScanners(new SubTypesScanner(), new MethodAnnotationsScanner()));
+        Set<Method> methods = reflections.getMethodsAnnotatedWith("org.reflections.scanners.MethodAnnotationsScanner$Annotation");
+        for (Method method : methods) {
+            if (method.getName().equals("ubyteToInt")) {
+                // Invoke the private method using reflection
+                Object result = method.invoke(endianUtils, (Object) (byte) 0xFF);
+                assertEquals(255, result, "The ubyteToInt method should return 255 for the input 0xFF");
+                break;
+            }
+        }
+    }
+
+    @Test
+    public void testUbyteToIntNegative() throws Exception {
+        // Create an instance of EndianUtils
+        EndianUtils endianUtils = new EndianUtils();
+        // Use reflection to get the private method
+        Reflections reflections = new Reflections(new ConfigurationBuilder().setUrls(ClasspathHelper.forPackage("org.apache.tika.io")).setScanners(new SubTypesScanner(), new MethodAnnotationsScanner()));
+        Set<Method> methods = reflections.getMethodsAnnotatedWith("org.reflections.scanners.MethodAnnotationsScanner$Annotation");
+        for (Method method : methods) {
+            if (method.getName().equals("ubyteToInt")) {
+                // Invoke the private method using reflection
+                Object result = method.invoke(endianUtils, (Object) (byte) -1);
+                assertEquals(-1, result, "The ubyteToInt method should return -1 for the input -1");
+                break;
+            }
+        }
+    }
+
+    @Test
+    public void testUbyteToIntZero() throws Exception {
+        // Create an instance of EndianUtils
+        EndianUtils endianUtils = new EndianUtils();
+        // Use reflection to get the private method
+        Reflections reflections = new Reflections(new ConfigurationBuilder().setUrls(ClasspathHelper.forPackage("org.apache.tika.io")).setScanners(new SubTypesScanner(), new MethodAnnotationsScanner()));
+        Set<Method> methods = reflections.getMethodsAnnotatedWith("org.reflections.scanners.MethodAnnotationsScanner$Annotation");
+        for (Method method : methods) {
+            if (method.getName().equals("ubyteToInt")) {
+                // Invoke the private method using reflection
+                Object result = method.invoke(endianUtils, (Object) (byte) 0);
+                assertEquals(0, result, "The ubyteToInt method should return 0 for the input 0");
+                break;
+            }
+        }
+    }
+
+    @Test
+    public void testUbyteToIntMaxValue() throws Exception {
+        // Create an instance of EndianUtils
+        EndianUtils endianUtils = new EndianUtils();
+        // Use reflection to get the private method
+        Reflections reflections = new Reflections(new ConfigurationBuilder().setUrls(ClasspathHelper.forPackage("org.apache.tika.io")).setScanners(new SubTypesScanner(), new MethodAnnotationsScanner()));
+        Set<Method> methods = reflections.getMethodsAnnotatedWith("org.reflections.scanners.MethodAnnotationsScanner$Annotation");
+        for (Method method : methods) {
+            if (method.getName().equals("ubyteToInt")) {
+                // Invoke the private method using reflection
+                Object result = method.invoke(endianUtils, (Object) (byte) 255);
+                assertEquals(255, result, "The ubyteToInt method should return 255 for the input 255");
+                break;
+            }
+        }
+    }
+
+    @Test
+    public void testUbyteToIntMinValue() throws Exception {
+        // Create an instance of EndianUtils
+    }
+}
+
+--------------------------------------------
+Error in EndianUtils_ubyteToInt_29_2_Test: line 6 : package org.reflections does not exist
+Error in EndianUtils_ubyteToInt_29_2_Test: line 7 : package org.reflections.scanners does not exist
+Error in EndianUtils_ubyteToInt_29_2_Test: line 8 : package org.reflections.scanners does not exist
+Error in EndianUtils_ubyteToInt_29_2_Test: line 9 : package org.reflections.util does not exist
+Error in EndianUtils_ubyteToInt_29_2_Test: line 10 : package org.reflections.util does not exist

@@ -1,0 +1,76 @@
+package org.apache.tika.io;
+
+import static org.junit.jupiter.params.provider.Arguments.arguments;
+import static org.junit.jupiter.params.provider.MethodSource.methodSource;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.stream.Stream;
+import org.apache.tika.exception.TikaException;
+import org.apache.tika.io.EndianUtils;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.*;
+import org.junit.jupiter.api.*;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+public class EndianUtils_getLongLE_28_0_Test {
+
+    private EndianUtils endianUtils;
+
+    @BeforeEach
+    public void setUp() {
+        endianUtils = new EndianUtils();
+    }
+
+    @Test
+    public void testGetLongLEWithEmptyArray() {
+        assertThrows(NullPointerException.class, () -> endianUtils.getLongLE(new byte[0], 0));
+    }
+
+    @Test
+    public void testGetLongLEWithSingleByteArray() {
+        assertThrows(NullPointerException.class, () -> endianUtils.getLongLE(new byte[] { 1 }, 0));
+    }
+
+    @Test
+    public void testGetLongLEWithValidArray() {
+        byte[] data = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
+        int offset = 0;
+        long expected = 0x0102030405060708L;
+        assertEquals(expected, endianUtils.getLongLE(data, offset));
+    }
+
+    @Test
+    public void testGetLongLEWithOffsetOutOfBounds() {
+        byte[] data = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
+        int offset = 8;
+        assertThrows(IndexOutOfBoundsException.class, () -> endianUtils.getLongLE(data, offset));
+    }
+
+    @Test
+    public void testGetLongLEWithNegativeOffset() {
+        byte[] data = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
+        int offset = -1;
+        assertThrows(IndexOutOfBoundsException.class, () -> endianUtils.getLongLE(data, offset));
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideInvalidData")
+    public void testGetLongLEWithInvalidData(byte[] data, int offset) {
+        assertThrows(IndexOutOfBoundsException.class, () -> endianUtils.getLongLE(data, offset));
+    }
+
+    private static Stream<Arguments> provideInvalidData() {
+        return Stream.of(arguments(new byte[0], 0), arguments(new byte[] { 1 }, 0), arguments(new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 }, 8), arguments(new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 }, -1));
+    }
+}
+
+--------------------------------------------
+Error in EndianUtils_getLongLE_28_0_Test: line 4 : cannot find symbol
+  symbol:   static methodSource
+  location: class org.junit.jupiter.params.provider.MethodSource

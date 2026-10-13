@@ -1,0 +1,106 @@
+package org.apache.tika.io;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import org.apache.tika.exception.TikaException;
+import org.apache.tika.io.EndianUtils;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.*;
+import org.junit.jupiter.api.*;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+@ExtendWith(MockitoExtension.class)
+public class EndianUtils_getUIntBE_26_0_Test {
+
+    @Mock
+    private InputStream inputStream;
+
+    @BeforeEach
+    public void setUp() throws IOException {
+        when(inputStream.read()).thenReturn(0x12, 0x34, 0x56, 0x78, 0x9A, 0xBC, 0xDE, 0xF0);
+        // End of stream
+        when(inputStream.read()).thenReturn(-1);
+    }
+
+    @Test
+    public void testGetUIntBEWithValidData() throws IOException, TikaException {
+        byte[] data = new byte[8];
+        inputStream.read(data);
+        long result = EndianUtils.getUIntBE(data);
+        assertEquals(0x123456789ABCDEF0L, result);
+    }
+
+    @Test
+    public void testGetUIntBEWithOffset() throws IOException, TikaException {
+        byte[] data = new byte[8];
+        inputStream.read(data);
+        long result = EndianUtils.getUIntBE(data, 2);
+        assertEquals(0x56789ABCDEF01234L, result);
+    }
+
+    @Test
+    public void testGetUIntBEWithNegativeOffset() throws IOException, TikaException {
+        byte[] data = new byte[8];
+        inputStream.read(data);
+        long result = EndianUtils.getUIntBE(data, -2);
+        assertEquals(0x123456789ABCDEF0L, result);
+    }
+
+    @Test
+    public void testGetUIntBEWithOffsetOutOfRange() throws IOException, TikaException {
+        byte[] data = new byte[8];
+        inputStream.read(data);
+        assertThrowsExactly(IndexOutOfBoundsException.class, () -> EndianUtils.getUIntBE(data, 8));
+    }
+
+    @Test
+    public void testGetUIntBEWithOffsetOutOfRangeNegative() throws IOException, TikaException {
+        byte[] data = new byte[8];
+        inputStream.read(data);
+        assertThrowsExactly(IndexOutOfBoundsException.class, () -> EndianUtils.getUIntBE(data, -9));
+    }
+
+    @Test
+    public void testGetUIntBEWithEmptyData() throws IOException, TikaException {
+        byte[] data = new byte[0];
+        long result = EndianUtils.getUIntBE(data);
+        assertEquals(0L, result);
+    }
+
+    @Test
+    public void testGetUIntBEWithNullData() throws IOException, TikaException {
+        assertThrowsExactly(NullPointerException.class, () -> EndianUtils.getUIntBE(null));
+    }
+
+    @Test
+    public void testGetUIntBEWithInvalidData() throws IOException, TikaException {
+        byte[] data = new byte[8];
+        data[0] = 0x12;
+        data[1] = 0x34;
+        data[2] = 0x56;
+        data[3] = 0x78;
+        data[4] = 0x9A;
+        data[5] = 0xBC;
+        data[6] = 0xDE;
+        data[7] = 0xF0;
+        long result = EndianUtils.getUIntBE(data);
+        assertEquals(0x123456789ABCDEF0L, result);
+    }
+
+    @Test
+    public void testGetUIntBEWithInputStream() throws IOException, TikaException {
+        byte[] data = new byte[8];
+        inputStream.read(data);
+        long result = EndianUtils.getUIntBE(data);
+        assertEquals(0x123456789ABCDEF0L, result);
+    }
+}
+
+--------------------------------------------
+Error in EndianUtils_getUIntBE_26_0_Test: line 85 : incompatible types: possible lossy conversion from int to byte
+Error in EndianUtils_getUIntBE_26_0_Test: line 86 : incompatible types: possible lossy conversion from int to byte
+Error in EndianUtils_getUIntBE_26_0_Test: line 87 : incompatible types: possible lossy conversion from int to byte
+Error in EndianUtils_getUIntBE_26_0_Test: line 88 : incompatible types: possible lossy conversion from int to byte

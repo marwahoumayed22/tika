@@ -1,0 +1,49 @@
+package org.apache.tika.io;
+
+import org.apache.tika.io.EndianUtils;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.io.InputStream;
+import org.apache.tika.exception.TikaException;
+import org.mockito.*;
+import org.junit.jupiter.api.*;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+@ExtendWith(MockitoExtension.class)
+public class EndianUtils_getIntLE_21_1_Test {
+
+    private EndianUtils endianUtils;
+
+    @BeforeEach
+    public void setUp() {
+        endianUtils = new EndianUtils();
+    }
+
+    @Test
+    public void testGetIntLE() throws IOException {
+        // Test data
+        byte[] data = { 0x01, 0x02, 0x03, 0x04 };
+        int offset = 0;
+        // Expected result
+        int expected = 0x04030201;
+        // Use reflection to invoke the private method
+        try {
+            Method getIntLEMethod = EndianUtils.class.getDeclaredMethod("getIntLE", byte[].class, int.class);
+            getIntLEMethod.setAccessible(true);
+            int result = (int) getIntLEMethod.invoke(endianUtils, data, offset);
+            // Verify the result
+            assertEquals(expected, result);
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            fail("Error invoking private method: " + e.getMessage());
+        }
+    }
+}
+
+--------------------------------------------
+Error in EndianUtils_getIntLE_21_1_Test: line 40 : cannot find symbol
+  symbol:   class InvocationTargetException
+  location: class org.apache.tika.io.EndianUtils_getIntLE_21_1_Test
