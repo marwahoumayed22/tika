@@ -1,0 +1,3 @@
+INFO  [main] 13:00:34,830 org.apache.tika.config.TikaExtras tika.extras.dir: loaded 1 extra jar(s): [/var/folders/2d/swc_h_6x3jx1jglpkk3mcsqc0000gn/T/junit-5868683674861752616/extra.jar]
+INFO  [pool-4-thread-1] 13:00:42,368 com.martensigwart.fakeload.DefaultFakeLoadExecutor FakeLoad execution started
+INFO  [pool-6-thread-1] 13:00:42,488 com.martensigwart.fakeload.DefaultFakeLoadExecutor FakeLoad execution finished
