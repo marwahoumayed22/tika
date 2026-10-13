@@ -351,7 +351,7 @@ Workflow : [`.github/workflows/tache2.yml`](.github/workflows/tache2.yml). Il es
 
 Les workflows d'origine d'Apache Tika (Docker, builds Windows, JDK 21/25…) ont été désactivés dans le fork : ils ne concernent pas la tâche et dépassent les ressources gratuites.
 
-Résultat : ⟨À COMPLÉTER : lien vers l'exécution verte⟩
+Résultat : https://github.com/marwahoumayed22/tika/actions/runs/38439232714
 
 ---
 
