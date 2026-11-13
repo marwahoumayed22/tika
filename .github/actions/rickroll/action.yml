@@ -1,0 +1,10 @@
+name: Rickroll
+description: Rickroll quand un test échoue
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      run: |
+        echo "::error title=Tests échoués::Never gonna give you up ! https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+        echo "## 🎵 Never gonna give you up, never gonna let you down" >> "$GITHUB_STEP_SUMMARY"
+        echo "[Votre récompense](https://www.youtube.com/watch?v=dQw4w9WgXcQ)" >> "$GITHUB_STEP_SUMMARY"
