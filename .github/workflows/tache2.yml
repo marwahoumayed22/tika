@@ -25,6 +25,10 @@ jobs:
       - name: Compiler et tester tika-core
         run: mvn -B -pl tika-core -am install
 
+      - name: Rickroll si échec
+        if: failure()
+        uses: ./.github/actions/rickroll
+
       - name: Analyse de mutation PIT sur EndianUtils
         working-directory: tika-core
         run: mvn -B org.pitest:pitest-maven:mutationCoverage
