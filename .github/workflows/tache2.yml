@@ -1,5 +1,6 @@
 # IFT3913 - Tache 2 : execution des tests de tika-core (dont EndianUtils)
 # et analyse de mutation PIT sur EndianUtils.
+# IFT3913 - Tache 3 : rickroll si un cas de test echoue (action .github/actions/rickroll).
 name: Tache 2 - tests et mutation
 
 on:
@@ -8,6 +9,10 @@ on:
   pull_request:
     branches: [ main ]
   workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write   # Tache 3 : l'action rickroll commente la PR
 
 jobs:
   tests:
@@ -23,7 +28,15 @@ jobs:
           cache: 'maven'
 
       - name: Compiler et tester tika-core
+        id: tests
         run: mvn -B -pl tika-core -am install
+
+      # Tache 3 : un cas de test a echoue -> rickroll
+      - name: Rickroll si un test echoue
+        if: failure() && steps.tests.outcome == 'failure'
+        uses: ./.github/actions/rickroll
+        with:
+          percentage: '100'
 
       - name: Analyse de mutation PIT sur EndianUtils
         working-directory: tika-core
