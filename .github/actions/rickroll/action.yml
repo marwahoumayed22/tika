@@ -1,0 +1,84 @@
+# IFT3913 - Tache 3 : action reutilisable qui "rickrolle" quand un test echoue.
+#
+# Version modifiee de TejasvOnly/random-rickroll (licence Apache 2.0) :
+#  - l'original est une action JavaScript "node12", runtime retire de GitHub Actions,
+#    reecrite ici en action "composite" (bash), sans aucune dependance npm ;
+#  - l'original ne reagit qu'a l'ouverture d'un ticket (issue) ; celle-ci est appelee
+#    apres un echec de tests et rickrolle dans le resume du job, dans les annotations
+#    et, pour une pull request, dans un commentaire de la PR ;
+#  - l'entree "percentage" de l'original est conservee (100 = toujours).
+name: 'Rickroll on failure'
+description: 'Rickrolle les developpeurs quand un cas de test echoue.'
+author: 'Houmayed & El Fakir (d apres Tejasv Sharma)'
+branding:
+  icon: 'music'
+  color: 'red'
+
+inputs:
+  percentage:
+    description: 'Probabilite (0-100) de rickroller. 100 = a chaque echec.'
+    required: false
+    default: '100'
+  message:
+    description: 'Message affiche avec le rickroll.'
+    required: false
+    default: 'Un cas de test a echoue... et tu viens de te faire rickroller.'
+  github-token:
+    description: 'Jeton utilise pour commenter la pull request.'
+    required: false
+    default: ${{ github.token }}
+
+outputs:
+  rickrolled:
+    description: '"true" si le rickroll a eu lieu.'
+    value: ${{ steps.roll.outputs.rickrolled }}
+
+runs:
+  using: 'composite'
+  steps:
+    - id: roll
+      shell: bash
+      env:
+        PERCENTAGE: ${{ inputs.percentage }}
+        MESSAGE: ${{ inputs.message }}
+        GH_TOKEN: ${{ inputs.github-token }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      run: |
+        VIDEO="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+        GIF="https://user-images.githubusercontent.com/37572049/90699500-0cc3ec00-e2a1-11ea-8d13-989526e86b0e.gif"
+
+        # Meme tirage que l'action d'origine : rickroll si percentage > aleatoire(0..99)
+        if [ "$PERCENTAGE" -le $(( RANDOM % 100 )) ]; then
+          echo "Pas de rickroll cette fois-ci."
+          echo "rickrolled=false" >> "$GITHUB_OUTPUT"
+          exit 0
+        fi
+
+        # 1. Journal du job
+        echo "=============================================================="
+        echo "   (>'-')>   RICKROLL !   <('-'<)"
+        echo "   $MESSAGE"
+        echo "   $VIDEO"
+        echo "=============================================================="
+
+        # 2. Annotation visible sur la page du workflow
+        echo "::warning title=Rickroll::$MESSAGE $VIDEO"
+
+        # 3. Resume du job (GIF + lien)
+        {
+          echo "## :musical_note: Rickroll !"
+          echo ""
+          echo "$MESSAGE"
+          echo ""
+          echo "[![rickroll]($GIF)]($VIDEO)"
+        } >> "$GITHUB_STEP_SUMMARY"
+
+        # 4. Commentaire sur la pull request, s'il y en a une
+        if [ -n "$PR_NUMBER" ]; then
+          BODY=$(printf '%s\n\n[![rickroll](%s)](%s)\n\n[Voir les tests en echec](%s)' "$MESSAGE" "$GIF" "$VIDEO" "$RUN_URL")
+          gh pr comment "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --body "$BODY" \
+            || echo "::notice::Commentaire de PR impossible (permissions du jeton)."
+        fi
+
+        echo "rickrolled=true" >> "$GITHUB_OUTPUT"

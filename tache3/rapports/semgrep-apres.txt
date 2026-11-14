@@ -1,0 +1,348 @@
+                    
+                    
+┌──────────────────┐
+│ 39 Code Findings │
+└──────────────────┘
+                                                                     
+    tika-core/src/main/java/org/apache/tika/config/ServiceLoader.java
+    ❯❱ root.semgrep-rules.java.lang.security.audit.unsafe-reflection
+          ❰❰ Blocking ❱❱
+          If an attacker can supply values that the application then uses to determine which class to        
+          instantiate or which method to invoke, the potential exists for the attacker to create control flow
+          paths through the application that were not intended by the application developers. This attack    
+          vector may allow the attacker to bypass authentication or access control checks or otherwise cause 
+          the application to behave in an unexpected manner.                                                 
+                                                                                                             
+          196┆ Class<?> klass = Class.forName(name, true, loader);
+                                                                           
+    tika-core/src/main/java/org/apache/tika/detect/FileCommandDetector.java
+   ❯❯❱ root.semgrep-rules.java.lang.security.audit.command-injection-process-builder
+          ❰❰ Blocking ❱❱
+          A formatted or concatenated string was detected as input to a ProcessBuilder call. This is dangerous
+          if a variable is controlled by user input and could result in a command injection. Ensure your      
+          variables are not controlled by users or sufficiently sanitized.                                    
+                                                                                                              
+          110┆ ProcessBuilder builder = new ProcessBuilder(args);
+                                                                      
+    tika-core/src/main/java/org/apache/tika/io/TemporaryResources.java
+    ❯❱ root.semgrep-rules.java.lang.security.audit.crypto.weak-random
+          ❰❰ Blocking ❱❱
+          Detected use of the functions `Math.random()` or `java.util.Random()`. These are both not      
+          cryptographically strong random number generators (RNGs). If you are using these RNGs to create
+          passwords or secret tokens, use `java.security.SecureRandom` instead.                          
+                                                                                                         
+           97┆ String name = "apache-tika-" + Long.toHexString(new Random().nextLong()) + actualSuffix;
+                                                                   
+    tika-core/src/main/java/org/apache/tika/io/TikaInputStream.java
+   ❯❯❱ root.semgrep-rules.java.lang.correctness.hardcoded-conditional
+          ❰❰ Blocking ❱❱
+          This if statement will always have the same behavior and is therefore unnecessary.
+                                                                                            
+          312┆ if (closeShieldDepth > 0) {
+          313┆     return;
+          314┆ }
+                                                                     
+    tika-core/src/main/java/org/apache/tika/mime/MimeTypesReader.java
+   ❯❯❱ root.semgrep-rules.java.lang.security.audit.xxe.saxparserfactory-disallow-doctype-decl-missing
+          ❰❰ Blocking ❱❱
+          DOCTYPE declarations are enabled for this SAXParserFactory. This is vulnerable to XML external      
+          entity attacks. Disable this by setting the feature `http://apache.org/xml/features/disallow-       
+          doctype-decl` to true. Alternatively, allow DOCTYPE declarations and only prohibit external entities
+          declarations. This can be done by setting the features `http://xml.org/sax/features/external-       
+          general-entities` and `http://xml.org/sax/features/external-parameter-entities` to false. NOTE - The
+          previous links are not meant to be clicked. They are the literal config key values that are supposed
+          to be used to disable these features. For more information, see https://semgrep.dev/docs/cheat-     
+          sheets/java-xxe/#3a-documentbuilderfactory.                                                         
+                                                                                                              
+           ▶▶┆ Autofix ▶ factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+              factory.newSAXParser();                                                                     
+          223┆ return factory.newSAXParser();
+                                                                     
+    tika-core/src/main/java/org/apache/tika/parser/NetworkParser.java
+    ❯❱ root.semgrep-rules.java.lang.security.audit.crypto.unencrypted-socket
+          ❰❰ Blocking ❱❱
+          Detected use of a Java socket that is not encrypted. As a result, the traffic could be read by an
+          attacker intercepting the network traffic. Use an SSLSocket created by 'SSLSocketFactory' or     
+          'SSLServerSocketFactory' instead.                                                                
+                                                                                                           
+           76┆ try (Socket socket = new Socket(uri.getHost(), uri.getPort())) {
+   
+    ❯❱ root.semgrep-rules.java.lang.security.audit.crypto.ssl.insecure-trust-manager
+          ❰❰ Blocking ❱❱
+          Detected empty trust manager implementations. This is dangerous because it accepts any certificate,
+          enabling man-in-the-middle attacks. Consider using a KeyStore and TrustManagerFactory instead. See 
+          https://stackoverflow.com/questions/2642777/trusting-all-certificates-using-httpclient-over-https  
+          for more information.                                                                              
+                                                                                                             
+          108┆ public X509Certificate[] getAcceptedIssuers() {
+          109┆     return null;
+          110┆ }
+            ⋮┆----------------------------------------
+          112┆ public void checkClientTrusted(X509Certificate[] certs, String authType) {}
+            ⋮┆----------------------------------------
+          114┆ public void checkServerTrusted(X509Certificate[] certs, String authType) {}
+   
+    ❯❱ root.semgrep-rules.java.lang.security.audit.weak-ssl-context
+          ❰❰ Blocking ❱❱
+          An insecure SSL context was detected. TLS versions 1.0, 1.1, and all SSL versions are considered
+          weak encryption and are deprecated. Use SSLContext.getInstance("TLSv1.2") for the best security.
+                                                                                                          
+           ▶▶┆ Autofix ▶ SSLContext.getInstance("TLSv1.2")
+          117┆ SSLContext sslContext = SSLContext.getInstance("TLS");
+                                                                               
+    tika-core/src/main/java/org/apache/tika/parser/external/ExternalParser.java
+   ❯❯❱ root.semgrep-rules.java.lang.security.audit.command-injection-process-builder
+          ❰❰ Blocking ❱❱
+          A formatted or concatenated string was detected as input to a ProcessBuilder call. This is dangerous
+          if a variable is controlled by user input and could result in a command injection. Ensure your      
+          variables are not controlled by users or sufficiently sanitized.                                    
+                                                                                                              
+          193┆ new ProcessBuilder(thisCommandLine),
+                                                                     
+    tika-core/src/main/java/org/apache/tika/utils/XMLReaderUtils.java
+    ❯❱ root.semgrep-rules.java.lang.security.xmlinputfactory-possible-xxe
+          ❰❰ Blocking ❱❱
+          XML external entities are not explicitly disabled for this XMLInputFactory. This could be vulnerable
+          to XML external entity vulnerabilities. Explicitly disable external entities by setting             
+          "javax.xml.stream.isSupportingExternalEntities" to false.                                           
+                                                                                                              
+          307┆ XMLInputFactory factory = XMLInputFactory.newFactory();
+   
+   ❯❯❱ root.semgrep-rules.java.lang.security.audit.xxe.documentbuilderfactory-disallow-doctype-decl-missing
+          ❰❰ Blocking ❱❱
+          DOCTYPE declarations are enabled for this DocumentBuilderFactory. This is vulnerable to XML external
+          entity attacks. Disable this by setting the feature "http://apache.org/xml/features/disallow-       
+          doctype-decl" to true. Alternatively, allow DOCTYPE declarations and only prohibit external entities
+          declarations. This can be done by setting the features "http://xml.org/sax/features/external-       
+          general-entities" and "http://xml.org/sax/features/external-parameter-entities" to false.           
+                                                                                                              
+           ▶▶┆ Autofix ▶ factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+              factory.newDocumentBuilder();                                                               
+          607┆ DocumentBuilder builder = factory.newDocumentBuilder();
+   
+    ❯❱ root.semgrep-rules.java.lang.security.audit.unsafe-reflection
+          ❰❰ Blocking ❱❱
+          If an attacker can supply values that the application then uses to determine which class to        
+          instantiate or which method to invoke, the potential exists for the attacker to create control flow
+          paths through the application that were not intended by the application developers. This attack    
+          vector may allow the attacker to bypass authentication or access control checks or otherwise cause 
+          the application to behave in an unexpected manner.                                                 
+                                                                                                             
+          844┆ Class.forName(securityManagerClassName).getDeclaredConstructor().newInstance();
+            ⋮┆----------------------------------------
+          888┆ Class.forName(securityManagerClassName).getDeclaredConstructor().newInstance();
+                                                                                                                        
+    tika-parsers/tika-parsers-standard/tika-parsers-standard-modules/tika-parser-microsoft-module/src/main/java/org/apac
+  he/tika/parser/microsoft/OfficeParser.java                                                                            
+    ❯❱ root.semgrep-rules.java.lang.security.audit.crypto.use-of-md5
+          ❰❰ Blocking ❱❱
+          Detected MD5 hash algorithm which is considered insecure. MD5 is not collision resistant and is
+          therefore not suitable as a cryptographic signature. Use HMAC instead.                         
+                                                                                                         
+           ▶▶┆ Autofix ▶ "SHA-512"
+          320┆ MessageDigest digest = MessageDigest.getInstance("MD5");
+                                                                                                                        
+    tika-parsers/tika-parsers-standard/tika-parsers-standard-modules/tika-parser-microsoft-module/src/main/java/org/apac
+  he/tika/parser/microsoft/chm/ChmLzxBlock.java                                                                         
+   ❯❯❱ root.semgrep-rules.java.lang.correctness.eqeq
+          ❰❰ Blocking ❱❱
+          `goodParameter == goodParameter` or `goodParameter != goodParameter` is always true. (Unless the
+          value compared is a float or double). To test if `goodParameter` is not-a-number, use           
+          `Double.isNaN(goodParameter)`.                                                                  
+                                                                                                          
+          888┆ return (goodParameter == 3);
+                                                                                                                        
+    tika-parsers/tika-parsers-standard/tika-parsers-standard-modules/tika-parser-microsoft-module/src/main/java/org/apac
+  he/tika/parser/microsoft/chm/ChmLzxcResetTable.java                                                                   
+   ❯❯❱ root.semgrep-rules.java.lang.correctness.eqeq
+          ❰❰ Blocking ❱❱
+          `goodParameter == goodParameter` or `goodParameter != goodParameter` is always true. (Unless the
+          value compared is a float or double). To test if `goodParameter` is not-a-number, use           
+          `Double.isNaN(goodParameter)`.                                                                  
+                                                                                                          
+          149┆ return (goodParameter == 2);
+                                                                                                                        
+    tika-parsers/tika-parsers-standard/tika-parsers-standard-modules/tika-parser-microsoft-module/src/main/java/org/apac
+  he/tika/parser/microsoft/libpst/LibPstParser.java                                                                     
+   ❯❯❱ root.semgrep-rules.java.lang.security.audit.command-injection-process-builder
+          ❰❰ Blocking ❱❱
+          A formatted or concatenated string was detected as input to a ProcessBuilder call. This is dangerous
+          if a variable is controlled by user input and could result in a command injection. Ensure your      
+          variables are not controlled by users or sufficiently sanitized.                                    
+                                                                                                              
+          157┆ return new ProcessBuilder(commands);
+            ⋮┆----------------------------------------
+          182┆ ProcessBuilder pb = new ProcessBuilder(ProcessUtils.escapeCommandLine(fullReadPstCommand),
+               "-V");                                                                                    
+                                                                                                                        
+    tika-parsers/tika-parsers-standard/tika-parsers-standard-modules/tika-parser-microsoft-module/src/main/java/org/apac
+  he/tika/parser/microsoft/onenote/PropertyValue.java                                                                   
+   ❯❯❱ root.semgrep-rules.java.lang.correctness.hardcoded-conditional
+          ❰❰ Blocking ❱❱
+          This if statement will always have the same behavior and is therefore unnecessary.
+                                                                                            
+           48┆ if (isRawText) {
+           49┆     LOG.debug("{}<{}", IndentUtil.getIndent(indentLevel + 1), propertyId);
+           50┆ }
+            ⋮┆----------------------------------------
+           52┆ if (isRawText) {
+           53┆     LOG.debug("{}", scalar);
+           54┆ }
+            ⋮┆----------------------------------------
+           58┆ if (isRawText) {
+           59┆     LOG.debug(" [");
+           60┆     content.dumpHex();
+           61┆     LOG.debug("]");
+           62┆ }
+            ⋮┆----------------------------------------
+           72┆ if (isRawText) {
+           73┆     if (!compactIDs.isEmpty()) {
+           74┆         LOG.debug("");
+           75┆     }
+           76┆     for (CompactID compactID : compactIDs) {
+           77┆         LOG.debug("{}{}[{}]", IndentUtil.getIndent(indentLevel + 1), xtype, compactID);
+           78┆         FileNodePtr where = document.guidToObject.get(compactID.guid);
+           79┆         if (where != null) {
+           80┆             where.dereference(document).print(document, pointer, indentLevel + 1);
+           81┆         }
+             [hid 2 additional lines, adjust with --max-lines-per-finding] 
+           85┆ if (isRawText) {
+           86┆     LOG.debug("SubProperty");
+           87┆ }
+                                                                                                                        
+    tika-parsers/tika-parsers-standard/tika-parsers-standard-modules/tika-parser-microsoft-module/src/main/java/org/apac
+  he/tika/parser/microsoft/onenote/fsshttpb/streamobj/DataElement.java                                                  
+    ❯❱ root.semgrep-rules.java.lang.security.audit.unsafe-reflection
+          ❰❰ Blocking ❱❱
+          If an attacker can supply values that the application then uses to determine which class to        
+          instantiate or which method to invoke, the potential exists for the attacker to create control flow
+          paths through the application that were not intended by the application developers. This attack    
+          vector may allow the attacker to bypass authentication or access control checks or otherwise cause 
+          the application to behave in an unexpected manner.                                                 
+                                                                                                             
+           53┆ DATA_ELEMENT_DATA_TYPE_MAPPING.put(value, Class.forName(className));
+                                                                                                                        
+    tika-parsers/tika-parsers-standard/tika-parsers-standard-modules/tika-parser-microsoft-module/src/main/java/org/apac
+  he/tika/parser/microsoft/onenote/fsshttpb/streamobj/StreamObject.java                                                 
+    ❯❱ root.semgrep-rules.java.lang.security.audit.unsafe-reflection
+          ❰❰ Blocking ❱❱
+          If an attacker can supply values that the application then uses to determine which class to        
+          instantiate or which method to invoke, the potential exists for the attacker to create control flow
+          paths through the application that were not intended by the application developers. This attack    
+          vector may allow the attacker to bypass authentication or access control checks or otherwise cause 
+          the application to behave in an unexpected manner.                                                 
+                                                                                                             
+           76┆ streamObjectTypeMapping.put(value, Class.forName(className));
+                                                                                                                        
+    tika-parsers/tika-parsers-standard/tika-parsers-standard-modules/tika-parser-microsoft-module/src/main/java/org/apac
+  he/tika/parser/microsoft/onenote/fsshttpb/util/BitWriter.java                                                         
+   ❯❯❱ root.semgrep-rules.java.lang.correctness.hardcoded-conditional
+          ❰❰ Blocking ❱❱
+          This if statement will always have the same behavior and is therefore unnecessary.
+                                                                                            
+           49┆ if (this.bitOffset % 8 != 0) {
+           50┆     throw new IOException(
+           51┆             "BitWriter:Bytes, Cannot get the current bytes because the last byte is not
+               written completely.");                                                                 
+           52┆ }
+                                                                                                                        
+    tika-parsers/tika-parsers-standard/tika-parsers-standard-modules/tika-parser-microsoft-module/src/main/java/org/apac
+  he/tika/parser/microsoft/rtf/RTFParser.java                                                                           
+   ❯❯❱ root.semgrep-rules.java.lang.correctness.hardcoded-conditional
+          ❰❰ Blocking ❱❱
+          This if statement will always have the same behavior and is therefore unnecessary.
+                                                                                            
+          141┆ if (USE_STATIC) {
+          142┆     if (EMB_OBJ_MAX_BYTES < 0) {
+          143┆         return EMB_OBJ_MAX_BYTES;
+          144┆     }
+          145┆     return EMB_OBJ_MAX_BYTES / 1024;
+          146┆ }
+            ⋮┆----------------------------------------
+          142┆ if (EMB_OBJ_MAX_BYTES < 0) {
+          143┆     return EMB_OBJ_MAX_BYTES;
+          144┆ }
+                                                                                                                        
+    tika-parsers/tika-parsers-standard/tika-parsers-standard-modules/tika-parser-ocr-module/src/main/java/org/apache/tik
+  a/parser/ocr/TesseractOCRParser.java                                                                                  
+   ❯❯❱ root.semgrep-rules.java.lang.security.audit.command-injection-formatted-runtime-call
+          ❰❰ Blocking ❱❱
+          A formatted or concatenated string was detected as input to a java.lang.Runtime call. This is      
+          dangerous if a variable is controlled by user input and could result in a command injection. Ensure
+          your variables are not controlled by users or sufficiently sanitized.                              
+                                                                                                             
+          228┆ Process process = java.lang.Runtime.getRuntime().exec(new String[]{"sh", "-c",
+          229┆         "ls " + tessdata + "/" + language + ".traineddata"});
+   
+   ❯❯❱ root.semgrep-rules.java.lang.security.audit.command-injection-process-builder
+          ❰❰ Blocking ❱❱
+          A formatted or concatenated string was detected as input to a ProcessBuilder call. This is dangerous
+          if a variable is controlled by user input and could result in a command injection. Ensure your      
+          variables are not controlled by users or sufficiently sanitized.                                    
+                                                                                                              
+          523┆ ProcessBuilder pb = new ProcessBuilder(cmd);
+            ⋮┆----------------------------------------
+          747┆ ProcessBuilder pb = new ProcessBuilder(args);
+                                                                                                                        
+    tika-parsers/tika-parsers-standard/tika-parsers-standard-modules/tika-parser-pdf-module/src/main/java/org/apache/tik
+  a/parser/pdf/PDFParser.java                                                                                           
+    ❯❱ root.semgrep-rules.java.lang.security.audit.crypto.ecb-cipher
+          ❰❰ Blocking ❱❱
+          Cipher in ECB mode is detected. ECB mode produces the same output for the same input each time which
+          allows an attacker to intercept and replay the data. Further, ECB mode does not provide any         
+          integrity checking. See https://find-sec-bugs.github.io/bugs.htm#CIPHER_INTEGRITY.                  
+                                                                                                              
+          611┆ Cipher cipher = Cipher.getInstance("DES/ECB/PKCS5Padding");
+   
+    ❯❱ root.semgrep-rules.java.lang.security.audit.crypto.des-is-deprecated
+          ❰❰ Blocking ❱❱
+          DES is considered deprecated. AES is the recommended cipher. Upgrade to use AES. See              
+          https://www.nist.gov/news-events/news/2005/06/nist-withdraws-outdated-data-encryption-standard for
+          more information.                                                                                 
+                                                                                                            
+           ▶▶┆ Autofix ▶ "AES/GCM/NoPadding"
+          611┆ Cipher cipher = Cipher.getInstance("DES/ECB/PKCS5Padding");
+                                                                                                                        
+    tika-parsers/tika-parsers-standard/tika-parsers-standard-modules/tika-parser-pdf-module/src/main/java/org/apache/tik
+  a/parser/pdf/PDFParserConfig.java                                                                                     
+    ❯❱ root.semgrep-rules.java.lang.security.audit.unsafe-reflection
+          ❰❰ Blocking ❱❱
+          If an attacker can supply values that the application then uses to determine which class to        
+          instantiate or which method to invoke, the potential exists for the attacker to create control flow
+          paths through the application that were not intended by the application developers. This attack    
+          vector may allow the attacker to bypass authentication or access control checks or otherwise cause 
+          the application to behave in an unexpected manner.                                                 
+                                                                                                             
+          617┆ Class<?> clazz = Class.forName(className);
+                                                                                                                        
+    tika-parsers/tika-parsers-standard/tika-parsers-standard-modules/tika-parser-pdf-module/src/main/java/org/apache/tik
+  a/renderer/pdf/poppler/PopplerRenderer.java                                                                           
+   ❯❯❱ root.semgrep-rules.java.lang.security.audit.command-injection-process-builder
+          ❰❰ Blocking ❱❱
+          A formatted or concatenated string was detected as input to a ProcessBuilder call. This is dangerous
+          if a variable is controlled by user input and could result in a command injection. Ensure your      
+          variables are not controlled by users or sufficiently sanitized.                                    
+                                                                                                              
+          152┆ builder.command(args);
+                                                                                    
+    tika-serialization/src/main/java/org/apache/tika/config/loader/ConfigLoader.java
+    ❯❱ root.semgrep-rules.java.lang.security.audit.unsafe-reflection
+          ❰❰ Blocking ❱❱
+          If an attacker can supply values that the application then uses to determine which class to        
+          instantiate or which method to invoke, the potential exists for the attacker to create control flow
+          paths through the application that were not intended by the application developers. This attack    
+          vector may allow the attacker to bypass authentication or access control checks or otherwise cause 
+          the application to behave in an unexpected manner.                                                 
+                                                                                                             
+          179┆ Class<?> clazz = Class.forName(className);
+                                                                                    
+    tika-serialization/src/main/java/org/apache/tika/serialization/JsonMetadata.java
+    ❯❱ root.semgrep-rules.java.lang.security.audit.object-deserialization
+          ❰❰ Blocking ❱❱
+          Found object deserialization using ObjectInputStream. Deserializing entire Java objects is dangerous
+          because malicious actors can create Java object streams with unintended consequences. Ensure that   
+          the objects being deserialized are not user-controlled. If this must be done, consider using HMACs  
+          to sign the data stream to make sure it is not tampered with, or consider only transmitting object  
+          fields and populating a new object.                                                                 
+                                                                                                              
+          137┆ ObjectInputStream ois = new ObjectInputStream(stream);
