@@ -24,8 +24,16 @@ import java.net.Socket;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
+import java.security.GeneralSecurityException;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
 import java.util.Collections;
 import java.util.Set;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.input.CloseShieldInputStream;
@@ -76,6 +84,12 @@ public class NetworkParser implements Parser {
         } else {
             URL url = uri.toURL();
             URLConnection connection = url.openConnection();
+            if (connection instanceof HttpsURLConnection) {
+                // IFT3913 TACHE 3 - VULN-1 (CWE-295) : vulnerabilite introduite volontairement.
+                // Le certificat du serveur distant n'est plus verifie : un attaquant en position
+                // d'intermediaire (MITM) peut se faire passer pour le serveur et modifier le document.
+                ((HttpsURLConnection) connection).setSSLSocketFactory(trustAllSocketFactory());
+            }
             connection.setDoOutput(true);
             connection.connect();
             try (InputStream input = connection.getInputStream()) {
@@ -84,6 +98,28 @@ public class NetworkParser implements Parser {
             }
         }
 
+    }
+
+    /**
+     * IFT3913 TACHE 3 - VULN-1 (CWE-295) : fabrique SSL qui accepte TOUS les certificats.
+     */
+    private static SSLSocketFactory trustAllSocketFactory() throws IOException {
+        TrustManager[] trustAll = new TrustManager[]{new X509TrustManager() {
+            public X509Certificate[] getAcceptedIssuers() {
+                return null;
+            }
+
+            public void checkClientTrusted(X509Certificate[] certs, String authType) {}
+
+            public void checkServerTrusted(X509Certificate[] certs, String authType) {}
+        }};
+        try {
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(null, trustAll, new SecureRandom());
+            return sslContext.getSocketFactory();
+        } catch (GeneralSecurityException e) {
+            throw new IOException(e);
+        }
     }
 
     private static class ParsingTask implements Runnable {

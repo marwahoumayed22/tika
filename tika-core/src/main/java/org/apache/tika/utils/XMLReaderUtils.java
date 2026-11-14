@@ -593,6 +593,22 @@ public class XMLReaderUtils implements Serializable {
     }
 
     /**
+     * IFT3913 TACHE 3 - VULN-2 (CWE-611) : vulnerabilite introduite volontairement.
+     * <p>
+     * Variante "rapide" de {@link #buildDOM(InputStream)} qui contourne le pool securise :
+     * la fabrique est creee sans desactiver les DOCTYPE ni les entites externes. Un document
+     * XML malveillant peut alors lire des fichiers locaux (&lt;!ENTITY x SYSTEM "file:///etc/passwd"&gt;),
+     * declencher des requetes reseau (SSRF) ou epuiser la memoire ("billion laughs").
+     */
+    public static Document buildDOMFast(InputStream is)
+            throws IOException, SAXException, ParserConfigurationException {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setNamespaceAware(true);
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        return builder.parse(is);
+    }
+
+    /**
      * This checks context for a user specified {@link SAXParser}.
      * If one is not found, this reuses a SAXParser from the pool.
      *

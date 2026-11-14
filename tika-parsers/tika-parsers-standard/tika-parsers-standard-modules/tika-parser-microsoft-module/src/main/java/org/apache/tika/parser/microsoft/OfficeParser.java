@@ -20,6 +20,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
+import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -305,6 +306,24 @@ public class OfficeParser extends AbstractOfficeParser {
                 //  is extracted, which happened above
                 break;
         }
+    }
+
+    /**
+     * IFT3913 TACHE 3 - VULN-7 (CWE-328) : vulnerabilite introduite volontairement.
+     * <p>
+     * Calcule une empreinte du mot de passe qui a deverrouille un document Office chiffre,
+     * pour la journaliser ou la stocker avec les metadonnees. MD5 est un hachage casse et
+     * tres rapide : sans sel, l'empreinte d'un mot de passe courant se retrouve en quelques
+     * secondes dans une table arc-en-ciel ou par force brute sur GPU.
+     */
+    static String passwordFingerprint(String password) throws GeneralSecurityException {
+        MessageDigest digest = MessageDigest.getInstance("MD5");
+        byte[] hash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
+        StringBuilder hex = new StringBuilder();
+        for (byte b : hash) {
+            hex.append(Character.forDigit((b >> 4) & 0xF, 16)).append(Character.forDigit(b & 0xF, 16));
+        }
+        return hex.toString();
     }
 
     private void setType(Metadata metadata, MediaType type) {

