@@ -1,0 +1,103 @@
+# IFT3913 - Tache 3 : le build echoue si un commit introduit une NOUVELLE vulnerabilite
+# detectee par Semgrep. Documentation : tache3/README.md
+name: Tache 3 - Semgrep (nouvelles vulnerabilites)
+
+on:
+  push:
+    branches: [ '**' ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  # Version de Semgrep et des regles figees pour que le resultat soit reproductible
+  # (memes versions que pour les rapports avant/apres de tache3/rapports/).
+  SEMGREP_VERSION: "1.185.0"
+  RULES_SHA: "a5ad1714f00c9f7fde980cab0ea1d6dc6d414fd2"
+  # Les 5 modules du cas d'etude
+  TARGETS: >-
+    tika-core
+    tika-serialization
+    tika-parsers/tika-parsers-standard/tika-parsers-standard-modules/tika-parser-pdf-module
+    tika-parsers/tika-parsers-standard/tika-parsers-standard-modules/tika-parser-microsoft-module
+    tika-parsers/tika-parsers-standard/tika-parsers-standard-modules/tika-parser-ocr-module
+
+jobs:
+  semgrep:
+    name: Semgrep - nouvelles vulnerabilites
+    runs-on: ubuntu-latest
+    steps:
+      - name: Recuperer le code (historique complet, necessaire au mode baseline)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Installer Semgrep ${{ env.SEMGREP_VERSION }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install "semgrep==${SEMGREP_VERSION}"
+
+      - name: Recuperer les regles Java de Semgrep (commit fige)
+        run: |
+          git clone --quiet --filter=blob:none https://github.com/semgrep/semgrep-rules "$RUNNER_TEMP/semgrep-rules"
+          git -C "$RUNNER_TEMP/semgrep-rules" checkout --quiet "$RULES_SHA"
+
+      - name: Choisir le commit de reference (baseline)
+        id: baseline
+        env:
+          EVENT: ${{ github.event_name }}
+          PR_BASE: ${{ github.event.pull_request.base.sha }}
+          BEFORE: ${{ github.event.before }}
+        run: |
+          ZERO=0000000000000000000000000000000000000000
+          if [ "$EVENT" = "pull_request" ]; then
+            BASE="$PR_BASE"                      # PR : comparer a la branche cible
+          elif [ -n "$BEFORE" ] && [ "$BEFORE" != "$ZERO" ] && git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
+            BASE="$BEFORE"                       # push : comparer a l'etat avant le push
+          else
+            git fetch --quiet origin main
+            BASE=$(git merge-base origin/main HEAD)   # nouvelle branche / workflow_dispatch
+          fi
+          echo "Commit de reference : $BASE"
+          echo "sha=$BASE" >> "$GITHUB_OUTPUT"
+
+      - name: Semgrep - echec si nouvelle vulnerabilite
+        env:
+          BASE: ${{ steps.baseline.outputs.sha }}
+        run: |
+          semgrep scan \
+            --config "$RUNNER_TEMP/semgrep-rules/java" \
+            --baseline-commit "$BASE" \
+            --exclude '*/src/test/*' \
+            --metrics=off \
+            --error \
+            --json-output="$RUNNER_TEMP/semgrep-nouvelles.json" \
+            $TARGETS
+
+      - name: Resume des nouvelles vulnerabilites
+        if: always()
+        run: |
+          F="$RUNNER_TEMP/semgrep-nouvelles.json"
+          [ -f "$F" ] || exit 0
+          N=$(jq '.results | length' "$F")
+          {
+            echo "## Semgrep : $N nouvelle(s) vulnerabilite(s) par rapport a \`${{ steps.baseline.outputs.sha }}\`"
+            if [ "$N" -gt 0 ]; then
+              echo ""
+              echo "| Regle | Severite | CWE | Fichier:ligne |"
+              echo "|---|---|---|---|"
+              jq -r '.results[] | "| `\(.check_id | split(".") | last)` | \(.extra.severity) | \((.extra.metadata.cwe // ["?"])[0]) | `\(.path | split("/") | last):\(.start.line)` |"' "$F"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Publier le rapport Semgrep
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: semgrep-nouvelles-vulnerabilites
+          path: ${{ runner.temp }}/semgrep-nouvelles.json
+          if-no-files-found: ignore
