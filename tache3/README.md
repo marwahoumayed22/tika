@@ -87,11 +87,13 @@ L2 est le cas important. Il montre que le workflow ne pénalise pas un développ
 
 | # | Scénario | Résultat du workflow Semgrep |
 |---|---|---|
-| G1 | Push sur `main` (README, workflows, sans nouvelle vulnérabilité) | ✅ succès — ⟨lien vers l'exécution⟩ |
-| G2 | [PR `tache3-vulnerabilites` → `main`](⟨lien de la PR⟩), qui contient les 7 vulnérabilités | ❌ **échec** avec les 11 alertes listées dans le résumé — ⟨lien vers l'exécution⟩ |
-| G3 | [PR `test-rickroll` → `main`](⟨lien de la PR⟩) (un test qui échoue, sans vulnérabilité) | ✅ succès (seul le workflow de tests échoue, section 6) — ⟨lien vers l'exécution⟩ |
+| G1 | Push sur `main` (README, workflows, sans nouvelle vulnérabilité) | ✅ succès — [exécution](https://github.com/marwahoumayed22/tika/actions/runs/43771129386) |
+| G2 | [PR #3 `tache3-vulnerabilites` → `main`](https://github.com/marwahoumayed22/tika/pull/3), qui contient les 7 vulnérabilités | ❌ **échec** : « 11 Code Findings », étape « Semgrep - echec si nouvelle vulnerabilite » en échec — [exécution](https://github.com/marwahoumayed22/tika/actions/runs/43771990755) |
+| G3 | [PR #2 `test-rickroll` → `main`](https://github.com/marwahoumayed22/tika/pull/2) (un test qui échoue, sans vulnérabilité) | ✅ succès (seul le workflow de tests échoue, section 6) — [exécution](https://github.com/marwahoumayed22/tika/actions/runs/43753339662) |
 
-![Échec du workflow Semgrep sur la PR des vulnérabilités](images/semgrep-echec-pr.png)
+Dans l'exécution G2, Semgrep a créé un *worktree* du commit de référence (`main`), analysé uniquement les 7 fichiers modifiés et rapporté **11 nouvelles alertes**, exactement celles de la section 5. L'onglet **Summary** de l'exécution affiche le tableau des alertes, et le rapport JSON est téléchargeable dans les artefacts (`semgrep-nouvelles-vulnerabilites`).
+
+**Effet secondaire utile :** sur cette même PR, le workflow de tests de la tâche 2 a d'abord échoué. Ce n'était pas à cause d'un test, mais de **Checkstyle** : `'}' is not followed by whitespace` dans `NetworkParser.java`, à la fermeture de la classe anonyme `X509TrustManager` placée dans un initialiseur de tableau. Nous avons corrigé la mise en forme (le gestionnaire de confiance est déclaré dans une variable, puis placé dans le tableau). La vulnérabilité est inchangée et Semgrep la détecte toujours aux mêmes lignes. La CI a donc rempli ses deux rôles : bloquer la faille (Semgrep) et le code mal formé (Checkstyle).
 
 ---
 
@@ -297,11 +299,11 @@ Dans [`tache2.yml`](../.github/workflows/tache2.yml), qui exécute les tests de 
 
 ### 6.3 Validation
 
-La branche [`test-rickroll`](https://github.com/marwahoumayed22/tika/tree/test-rickroll) ajoute un test qui échoue volontairement (`RickrollDemoTest.testNeverGonnaPass`, qui affirme `1987 == 2026`). Sur la [PR `test-rickroll` → `main`](⟨lien de la PR⟩) :
+La branche [`test-rickroll`](https://github.com/marwahoumayed22/tika/tree/test-rickroll) ajoute un test qui échoue volontairement (`RickrollDemoTest.testNeverGonnaPass`, qui affirme `1987 == 2026`). Sur la [PR #2 `test-rickroll` → `main`](https://github.com/marwahoumayed22/tika/pull/2) ([exécution](https://github.com/marwahoumayed22/tika/actions/runs/43753339640)) :
 - le workflow « Tache 2 - tests et mutation » échoue sur ce test ;
 - l'étape **« Rickroll si un test echoue »** s'exécute ;
 - le GIF apparaît dans le résumé du job et en commentaire de la PR.
 
 Cette branche n'est pas fusionnée. Sur `main`, les tests passent et l'étape de rickroll est ignorée (*skipped*).
 
-![Rickroll dans la PR](images/rickroll-pr.png)
+Résultat de l'exécution : `Compiler et tester tika-core` ❌ → `Rickroll si un test echoue` ✅ → `Analyse de mutation PIT` *skipped*. Le commentaire de `github-actions[bot]` avec le GIF est visible dans la [conversation de la PR #2](https://github.com/marwahoumayed22/tika/pull/2).
