@@ -104,7 +104,7 @@ public class NetworkParser implements Parser {
      * IFT3913 TACHE 3 - VULN-1 (CWE-295) : fabrique SSL qui accepte TOUS les certificats.
      */
     private static SSLSocketFactory trustAllSocketFactory() throws IOException {
-        TrustManager[] trustAll = new TrustManager[]{new X509TrustManager() {
+        TrustManager trustAll = new X509TrustManager() {
             public X509Certificate[] getAcceptedIssuers() {
                 return null;
             }
@@ -112,10 +112,10 @@ public class NetworkParser implements Parser {
             public void checkClientTrusted(X509Certificate[] certs, String authType) {}
 
             public void checkServerTrusted(X509Certificate[] certs, String authType) {}
-        }};
+        };
         try {
             SSLContext sslContext = SSLContext.getInstance("TLS");
-            sslContext.init(null, trustAll, new SecureRandom());
+            sslContext.init(null, new TrustManager[]{trustAll}, new SecureRandom());
             return sslContext.getSocketFactory();
         } catch (GeneralSecurityException e) {
             throw new IOException(e);
