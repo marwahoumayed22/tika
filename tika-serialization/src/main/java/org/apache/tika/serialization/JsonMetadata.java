@@ -18,6 +18,8 @@ package org.apache.tika.serialization;
 
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.io.Reader;
 import java.io.Writer;
 
@@ -120,6 +122,24 @@ public class JsonMetadata {
             return null;
         }
         return OBJECT_MAPPER.readValue(reader, Metadata.class);
+    }
+
+    /**
+     * IFT3913 TACHE 3 - VULN-4 (CWE-502) : vulnerabilite introduite volontairement.
+     * <p>
+     * Relit des metadonnees stockees dans l'ancien format "serialisation Java" au lieu de JSON.
+     * Le flux est deserialise avec ObjectInputStream SANS filtre de classes : n'importe quelle
+     * classe serialisable du classpath est instanciee avant meme le cast en {@link Metadata}.
+     * Avec une chaine de "gadgets" (ex. commons-collections), un fichier forge mene a
+     * l'execution de code a distance.
+     */
+    public static Metadata fromJavaSerialized(InputStream stream) throws IOException {
+        ObjectInputStream ois = new ObjectInputStream(stream);
+        try {
+            return (Metadata) ois.readObject();
+        } catch (ClassNotFoundException e) {
+            throw new IOException(e);
+        }
     }
 
     public static void setPrettyPrinting(boolean prettyPrint) {

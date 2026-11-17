@@ -20,13 +20,18 @@ import static org.apache.tika.metadata.PDF.OCR_PAGE_COUNT;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
 import javax.xml.stream.XMLStreamException;
 
 import org.apache.commons.io.input.UnsynchronizedByteArrayInputStream;
@@ -591,6 +596,26 @@ public class PDFParser implements Parser, RenderingParser {
         return password;
     }
 
+
+    /**
+     * IFT3913 TACHE 3 - VULN-6 (CWE-326 / CWE-327) : vulnerabilite introduite volontairement.
+     * <p>
+     * Chiffre le mot de passe d'un PDF protege pour pouvoir le conserver dans un cache de
+     * metadonnees. L'algorithme DES (cle effective de 56 bits) se casse par force brute en
+     * quelques heures, et le mode ECB chiffre deux blocs identiques de la meme facon,
+     * ce qui revele la structure du texte clair.
+     */
+    static String encryptPasswordForCache(String password) throws TikaException {
+        try {
+            SecretKeySpec key = new SecretKeySpec("tika1234".getBytes(StandardCharsets.UTF_8), "DES");
+            Cipher cipher = Cipher.getInstance("DES/ECB/PKCS5Padding");
+            cipher.init(Cipher.ENCRYPT_MODE, key);
+            byte[] encrypted = cipher.doFinal(password.getBytes(StandardCharsets.UTF_8));
+            return Base64.getEncoder().encodeToString(encrypted);
+        } catch (GeneralSecurityException e) {
+            throw new TikaException("unable to encrypt password", e);
+        }
+    }
 
     private void extractMetadata(PDDocument document, Metadata metadata, ParseContext context)
             throws TikaException {
