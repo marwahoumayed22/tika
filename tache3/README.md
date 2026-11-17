@@ -79,6 +79,18 @@ Pour vérifier son fonctionnement, on a fait échouer volontairement un test sur
 
 **Limite :** notre workflow déclenche actuellement le Rickroll sur un échec de Tika Core, et non de GraphHopper. Cette adaptation reste nécessaire pour respecter exactement la consigne.
 
+### Validation sur GraphHopper
+
+On a aussi intégré notre action Rickroll dans le workflow de tests de GraphHopper.
+
+Pour vérifier son fonctionnement, on a créé une branche de test avec un échec volontaire (`exit 1`). Les deux jobs ont échoué et l'action Rickroll s'est bien exécutée.
+
+- [Workflow GraphHopper modifié](https://github.com/fatimazahrae5/graphhopper/blob/tache3-rickroll/.github/workflows/build.yml)
+- [Action Rickroll](https://github.com/fatimazahrae5/graphhopper/blob/tache3-rickroll/.github/actions/rickroll/action.yml)
+- [Test du Rickroll](https://github.com/fatimazahrae5/graphhopper/actions/workflows/build.yml?query=branch%3Atest-rickroll)
+
+Ce test valide le déclenchement du Rickroll après un échec du build. Il ne s'agit pas d'un véritable test unitaire GraphHopper échoué.
+
 ## 6. Conclusion
 
 Semgrep détecte correctement les nouvelles vulnérabilités et fait échouer le workflow sans bloquer les alertes déjà présentes. Les sept vulnérabilités ont produit onze nouvelles alertes, confirmées par les rapports et les exécutions GitHub Actions.
