@@ -97,7 +97,6 @@ On a ensuite intégré cette action dans le workflow de tests de GraphHopper.
 
 Sur la branche `test-rickroll`, on a ajouté `RickrollValidationTest`, un test JUnit qui échoue volontairement, afin de vérifier le comportement du workflow.
 
-Les deux jobs ont échoué et l'étape Rickroll s'est exécutée avec succès. La confirmation du nom du test dans les logs Maven reste à vérifier.
 
 - [Workflow GraphHopper modifié](https://github.com/fatimazahrae5/graphhopper/blob/tache3-rickroll/.github/workflows/build.yml)
 - [Action Rickroll](https://github.com/fatimazahrae5/graphhopper/blob/tache3-rickroll/.github/actions/rickroll/action.yml)
